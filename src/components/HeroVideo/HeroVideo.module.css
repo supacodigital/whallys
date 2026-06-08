@@ -1,0 +1,76 @@
+/* ───────── Hero (vidéo de fond + contenu à gauche) ─────────
+   sticky : le hero reste figé en fond pendant que le contenu suivant (volet)
+   remonte par-dessus avec ses coins arrondis. */
+.hero {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  /* dvh : tient compte de la barre d'adresse mobile (fallback sur 100vh ci-dessus) */
+  height: 100dvh;
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+  color: var(--color-blanc);
+  background-color: var(--color-brun);
+  /* le hero passe sous le volet */
+  z-index: 0;
+}
+
+.video {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  pointer-events: none;
+}
+
+/* Dégradé latéral : sombre à gauche (sous le texte), transparent à droite
+   (laisse voir les produits de la vidéo). */
+.scrim {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    90deg,
+    rgba(28, 16, 8, 0.78) 0%,
+    rgba(28, 16, 8, 0.55) 30%,
+    rgba(28, 16, 8, 0.15) 55%,
+    rgba(28, 16, 8, 0) 75%
+  );
+  pointer-events: none;
+}
+
+/* Bloc de contenu aligné à gauche, contraint à la moitié gauche du hero */
+.inner {
+  position: relative;
+  max-width: 540px;
+  margin-right: auto;
+  /* Fade-in d'entrée au montage */
+  opacity: 1;
+  transform: translateY(0);
+  transition: opacity 600ms var(--ease-out), transform 600ms var(--ease-out);
+}
+
+@starting-style {
+  .inner {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+}
+
+/* Sur mobile, on assombrit davantage le bas pour la lisibilité si le texte
+   passe sous les produits, et on laisse le bloc occuper toute la largeur. */
+@media (max-width: 767px) {
+  .scrim {
+    background: linear-gradient(
+      180deg,
+      rgba(28, 16, 8, 0.55) 0%,
+      rgba(28, 16, 8, 0.25) 40%,
+      rgba(28, 16, 8, 0.65) 100%
+    );
+  }
+
+  .inner {
+    max-width: none;
+  }
+}

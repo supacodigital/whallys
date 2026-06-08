@@ -1,0 +1,49 @@
+/* ───────── Bouton WhatsApp flottant ───────── */
+.button {
+  position: fixed;
+  bottom: clamp(16px, 4vw, 28px);
+  right: clamp(16px, 4vw, 28px);
+  z-index: 30; /* au-dessus du contenu, sous le menu mobile (40) et le header (50) de la Navbar */
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background-color: #25d366; /* vert officiel WhatsApp */
+  color: var(--color-blanc);
+  box-shadow: 0 8px 24px -6px rgba(37, 211, 102, 0.6);
+
+  transition:
+    transform 200ms var(--ease-out),
+    box-shadow 200ms var(--ease-out);
+}
+
+.icon {
+  width: 30px;
+  height: 30px;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .button:hover {
+    transform: translateY(-2px) scale(1.05);
+    box-shadow: 0 12px 28px -6px rgba(37, 211, 102, 0.7);
+  }
+}
+
+.button:active {
+  transform: scale(0.95);
+}
+
+/* Respect des préférences de mouvement réduit */
+@media (prefers-reduced-motion: reduce) {
+  .button {
+    transition: none;
+  }
+
+  .button:hover,
+  .button:active {
+    transform: none;
+  }
+}

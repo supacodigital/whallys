@@ -1,0 +1,16 @@
+node_modules
+dist
+dist-ssr
+.env
+.env.local
+.env.*.local
+.DS_Store
+*.log
+.vscode/*
+!.vscode/extensions.json
+_video-originals/
+
+.playwright-mcp/
+
+# Sources/documents internes client
+_brief/
