@@ -11,17 +11,21 @@
 
 /* Variables d'identité Whally's */
 :root {
-  /* Couleurs du PDF client (CMYK convertis) */
-  --color-brun: #2c1a0e;
+  /* Couleurs du PDF client (CMYK convertis) — tons assourdis pour un rendu
+     éditorial premium (moins de saturation, plus de profondeur). */
+  --color-brun: #2a1810;
   --color-brun-soft: #3d2817;
-  --color-or: #f0c84a;
-  --color-or-soft: #e6b938;
+  /* Or désaturé, plus laiton/antique que jaune fluo : signal premium discret */
+  --color-or: #c9a24b;
+  --color-or-soft: #b08d3e;
+  --color-or-deep: #8a6d2c;
   --color-blanc: #ffffff;
-  --color-bg: #faf7f2;
-  --color-bg-warm: #f4ede0;
-  --color-texte: #1a1a1a;
-  --color-texte-soft: #5a4a3f;
-  --color-border: rgba(44, 26, 14, 0.12);
+  /* Fond crème chaud, plus papier que blanc pur */
+  --color-bg: #f7f2e9;
+  --color-bg-warm: #efe6d6;
+  --color-texte: #211712;
+  --color-texte-soft: #6b594c;
+  --color-border: rgba(42, 24, 16, 0.1);
 
   /* Typographies */
   --font-serif: 'Fraunces', 'Times New Roman', serif;
@@ -39,11 +43,16 @@
   --space-9: 96px;
   --space-10: 128px;
 
-  /* Rayons */
-  --radius-sm: 6px;
-  --radius-md: 12px;
-  --radius-lg: 20px;
+  /* Rayons — plus contenus, plus architecturaux (le premium évite le très rond) */
+  --radius-sm: 4px;
+  --radius-md: 10px;
+  --radius-lg: 16px;
   --radius-pill: 999px;
+
+  /* Ombres douces et chaudes (jamais de noir pur — toujours teinté brun) */
+  --shadow-sm: 0 1px 2px rgba(42, 24, 16, 0.06);
+  --shadow-md: 0 8px 24px -12px rgba(42, 24, 16, 0.25);
+  --shadow-lg: 0 30px 60px -28px rgba(42, 24, 16, 0.4);
 
   /* Easings — custom curves plus expressifs que les built-ins */
   --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
@@ -119,9 +128,12 @@ h2,
 h3,
 h4 {
   font-family: var(--font-serif);
-  font-weight: 700;
-  line-height: 1.1;
-  letter-spacing: -0.02em;
+  font-weight: 600;
+  line-height: 1.08;
+  letter-spacing: -0.025em;
+  /* Fraunces variable : pousse l'axe optique pour un rendu éditorial en grand */
+  font-optical-sizing: auto;
+  text-wrap: balance;
 }
 
 /* Accessibilité — réduire les animations si demandé par l'utilisateur */

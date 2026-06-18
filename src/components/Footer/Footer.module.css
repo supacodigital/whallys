@@ -3,27 +3,9 @@
   position: relative;
   background-color: var(--color-brun);
   color: var(--color-blanc);
-  /* contient le débordement horizontal de la coulée de fromage (100vw) */
   overflow: hidden;
-}
-
-/* Coulée de fromage fondu sur le bord haut du footer (même effet que la
-   bande produit : dégradé cheddar + coulures irrégulières + highlights). */
-.footer::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 50%;
-  width: 100vw;
-  height: 96px;
-  transform: translateX(-50%);
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='96' viewBox='0 0 400 96'%3E%3Cdefs%3E%3ClinearGradient id='cf' x1='0' y1='0' x2='0' y2='1'%3E%3Cstop offset='0' stop-color='%23f7d65a'/%3E%3Cstop offset='0.55' stop-color='%23eebb3a'/%3E%3Cstop offset='1' stop-color='%23d98f2a'/%3E%3C/linearGradient%3E%3C/defs%3E%3Cpath fill='url(%23cf)' d='M0 0h400v20C394 20 392 58 384 58 376 58 375 22 366 22 356 22 356 44 348 44 340 44 340 20 330 20 318 20 318 74 308 74 299 74 300 24 290 24 281 24 282 50 273 50 263 50 264 20 253 20 243 20 244 86 234 86 225 86 226 26 216 26 207 26 208 48 199 48 190 48 191 20 181 20 170 20 171 64 161 64 152 64 153 24 143 24 134 24 135 52 126 52 117 52 118 22 108 22 98 22 99 80 89 80 80 80 81 26 71 26 62 26 63 50 54 50 45 50 46 22 36 22 27 22 28 60 19 60 11 60 10 22 0 21Z'/%3E%3Cellipse cx='234' cy='40' rx='3' ry='14' fill='%23ffe27a' opacity='0.55'/%3E%3Cellipse cx='308' cy='38' rx='3' ry='12' fill='%23ffe27a' opacity='0.5'/%3E%3Cellipse cx='89' cy='42' rx='3' ry='12' fill='%23ffe27a' opacity='0.5'/%3E%3C/svg%3E");
-  background-repeat: repeat-x;
-  background-position: top center;
-  background-size: 400px 96px;
-  pointer-events: none;
-  filter: drop-shadow(0 3px 2px rgba(0, 0, 0, 0.25));
-  z-index: 1;
+  /* fin liseré or en haut : transition nette et premium depuis le crème */
+  border-top: 1px solid rgba(201, 162, 75, 0.28);
 }
 
 /* Ligne principale : logo à gauche, liens à droite */
@@ -33,8 +15,7 @@
   align-items: center;
   justify-content: space-between;
   gap: var(--space-5);
-  /* padding-top majoré pour laisser la place à la coulée de fromage en haut */
-  padding-top: clamp(76px, 9vw, 104px);
+  padding-top: clamp(56px, 7vw, 88px);
   padding-bottom: clamp(40px, 6vw, 64px);
 }
 

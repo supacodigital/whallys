@@ -8,131 +8,32 @@
   background-color: var(--color-bg);
 }
 
-/* ───────── Formes organiques animées en arrière-plan ─────────
-   Inspiration : illustrations \"abstract shapes\" beige/brun.
-   2 formes principales (haut-gauche brun foncé / bas-droite brun foncé) +
-   2 formes d'accent beige clair en dessous pour superposition.
-   Le morphing du border-radius crée un effet \"vivant\" sans bouger l'écran. */
+/* ───────── Décor d'arrière-plan ─────────
+   Deux halos radiaux très doux et statiques (or laiton + crème chaud) qui
+   réchauffent les coins sans dessiner de forme. Fini les blobs jaune fluo
+   animés : un fond calme, éditorial, qui laisse le formulaire respirer. */
 .bgShapes {
   position: absolute;
   inset: 0;
   pointer-events: none;
   overflow: hidden;
   z-index: 0;
+  background:
+    radial-gradient(
+      60vw 60vw at -5% -5%,
+      rgba(201, 162, 75, 0.1) 0%,
+      transparent 60%
+    ),
+    radial-gradient(
+      55vw 55vw at 105% 108%,
+      rgba(61, 40, 23, 0.08) 0%,
+      transparent 60%
+    );
 }
 
+/* Les anciennes formes ne sont plus rendues visuellement (DOM conservé). */
 .shape {
-  position: absolute;
-  will-change: border-radius;
-}
-
-/* Forme brun foncé en haut-gauche (la plus grande) */
-.shapeTopLeft {
-  top: -25%;
-  left: -25%;
-  width: 70vw;
-  height: 70vw;
-  max-width: 580px;
-  max-height: 580px;
-  background-color: var(--color-brun);
-  border-radius: 60% 40% 65% 35% / 55% 45% 55% 45%;
-}
-
-/* Accent jaune en haut-gauche, derrière mais décalé */
-.shapeTopLeftAccent {
-  top: 4%;
-  left: -18%;
-  width: 45vw;
-  height: 45vw;
-  max-width: 380px;
-  max-height: 380px;
-  background-color: #eebb3a; /* jaune fromage (teinte centrale du dégradé cheddar) */
-  border-radius: 50% 50% 60% 40% / 60% 50% 50% 40%;
-  z-index: -1;
-}
-
-/* Forme brun foncé en bas-droite */
-.shapeBottomRight {
-  bottom: -20%;
-  right: -25%;
-  width: 60vw;
-  height: 60vw;
-  max-width: 520px;
-  max-height: 520px;
-  background-color: var(--color-brun);
-  border-radius: 55% 45% 40% 60% / 50% 60% 40% 50%;
-}
-
-/* Accent jaune en bas-droite */
-.shapeBottomRightAccent {
-  bottom: -12%;
-  right: -2%;
-  width: 38vw;
-  height: 38vw;
-  max-width: 320px;
-  max-height: 320px;
-  background-color: #eebb3a; /* jaune fromage (teinte centrale du dégradé cheddar) */
-  border-radius: 60% 40% 50% 50% / 40% 60% 40% 60%;
-  z-index: -1;
-}
-
-/* Sous 640px : on réduit l'empreinte des formes pour ne pas chevaucher le contenu */
-@media (max-width: 639px) {
-  .shapeTopLeft,
-  .shapeBottomRight {
-    width: 80vw;
-    height: 80vw;
-  }
-  .shapeTopLeft {
-    top: -35%;
-    left: -40%;
-  }
-  .shapeBottomRight {
-    bottom: -30%;
-    right: -40%;
-  }
-  .shapeTopLeftAccent,
-  .shapeBottomRightAccent {
-    display: none;
-  }
-}
-
-/* Animation morphing du border-radius — chaque forme a son propre rythme */
-@media (prefers-reduced-motion: no-preference) {
-  .shapeTopLeft {
-    animation: morph-tl 18s ease-in-out infinite;
-  }
-  .shapeTopLeftAccent {
-    animation: morph-tla 22s ease-in-out infinite;
-  }
-  .shapeBottomRight {
-    animation: morph-br 20s ease-in-out infinite;
-  }
-  .shapeBottomRightAccent {
-    animation: morph-bra 24s ease-in-out infinite;
-  }
-}
-
-@keyframes morph-tl {
-  0%, 100% { border-radius: 60% 40% 65% 35% / 55% 45% 55% 45%; }
-  33%      { border-radius: 45% 55% 50% 50% / 65% 35% 60% 40%; }
-  66%      { border-radius: 55% 45% 40% 60% / 45% 55% 50% 50%; }
-}
-
-@keyframes morph-tla {
-  0%, 100% { border-radius: 50% 50% 60% 40% / 60% 50% 50% 40%; }
-  50%      { border-radius: 60% 40% 45% 55% / 50% 60% 45% 55%; }
-}
-
-@keyframes morph-br {
-  0%, 100% { border-radius: 55% 45% 40% 60% / 50% 60% 40% 50%; }
-  33%      { border-radius: 40% 60% 55% 45% / 60% 40% 55% 45%; }
-  66%      { border-radius: 60% 40% 50% 50% / 45% 55% 60% 40%; }
-}
-
-@keyframes morph-bra {
-  0%, 100% { border-radius: 60% 40% 50% 50% / 40% 60% 40% 60%; }
-  50%      { border-radius: 45% 55% 60% 40% / 55% 40% 55% 45%; }
+  display: none;
 }
 
 /* Contenu au-dessus des formes */
@@ -156,18 +57,18 @@
 }
 
 .headline {
-  font-size: clamp(32px, 4.5vw, 48px);
-  font-weight: 700;
-  letter-spacing: -0.02em;
+  font-size: clamp(36px, 5vw, 56px);
+  font-weight: 600;
+  letter-spacing: -0.03em;
   color: var(--color-brun);
-  line-height: 1.05;
+  line-height: 1.02;
   margin: 0;
 }
 
 .headline em {
   font-style: italic;
   font-weight: 400;
-  color: var(--color-or-soft);
+  color: var(--color-or-deep);
 }
 
 .subline {
@@ -249,7 +150,7 @@
   border-color: var(--color-or);
   background-color: var(--color-blanc);
   /* Halo opaque (0.6 > 0.25) pour atteindre le seuil WCAG 2.4.11 (contraste >= 3:1) */
-  box-shadow: 0 0 0 3px rgba(240, 200, 74, 0.6);
+  box-shadow: 0 0 0 3px rgba(201, 162, 75, 0.55);
 }
 
 /* #3 État erreur — appliqué quand l'utilisateur soumet alors qu'un champ requis est vide */
@@ -554,21 +455,21 @@
 /* État "prêt à soumettre" : halo statique par défaut, anim de pulse uniquement
    si l'utilisateur n'a pas demandé la réduction des animations. */
 .submitReady {
-  box-shadow: 0 0 0 4px rgba(240, 200, 74, 0.18);
+  box-shadow: 0 0 0 4px rgba(201, 162, 75, 0.2);
 }
 
 @media (prefers-reduced-motion: no-preference) {
   .submitReady {
-    box-shadow: 0 0 0 0 rgba(240, 200, 74, 0);
+    box-shadow: 0 0 0 0 rgba(201, 162, 75, 0);
     animation: ready-pulse 2.4s ease-in-out infinite;
   }
 
   @keyframes ready-pulse {
     0%, 100% {
-      box-shadow: 0 0 0 0 rgba(240, 200, 74, 0);
+      box-shadow: 0 0 0 0 rgba(201, 162, 75, 0);
     }
     50% {
-      box-shadow: 0 0 0 6px rgba(240, 200, 74, 0.18);
+      box-shadow: 0 0 0 6px rgba(201, 162, 75, 0.2);
     }
   }
 }
@@ -650,8 +551,9 @@
   width: 64px;
   height: 64px;
   border-radius: 50%;
-  background-color: #eebb3a; /* jaune fromage (teinte centrale du dégradé cheddar) */
-  color: var(--color-brun);
+  /* Pastille brun profond + check or : confirmation sobre et premium */
+  background-color: var(--color-brun);
+  color: var(--color-or);
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -687,7 +589,7 @@
   font-weight: 600;
   letter-spacing: 0.12em;
   text-transform: uppercase;
-  color: var(--color-or-soft);
+  color: var(--color-or-deep);
 }
 
 /* Méta : restaurant / département / livraison */
@@ -716,7 +618,7 @@
 }
 
 .recapMetaLabel svg {
-  color: var(--color-or-soft);
+  color: var(--color-or-deep);
   flex-shrink: 0;
 }
 
@@ -840,7 +742,7 @@
   font-weight: 600;
   letter-spacing: 0.16em;
   text-transform: uppercase;
-  color: var(--color-or-soft);
+  color: var(--color-or-deep);
   margin-bottom: var(--space-4);
 }
 
@@ -875,7 +777,7 @@
 @media (hover: hover) and (pointer: fine) {
   .trustCard:hover {
     background-color: var(--color-blanc);
-    border-color: rgba(240, 200, 74, 0.4);
+    border-color: rgba(201, 162, 75, 0.45);
     transform: translateY(-2px);
   }
 }
@@ -884,7 +786,7 @@
   width: 36px;
   height: 36px;
   border-radius: 50%;
-  background-color: rgba(240, 200, 74, 0.2);
+  background-color: rgba(201, 162, 75, 0.22);
   color: var(--color-brun);
   display: inline-flex;
   align-items: center;

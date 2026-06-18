@@ -20,10 +20,12 @@
 
 /* ───────── Variante fond marron (bande pleine largeur) ─────────
    Le pseudo-élément déborde du container jusqu'aux bords de l'écran (100vw)
-   pour créer une bande marron derrière toute la ligne. */
+   pour créer une bande marron pleine et nette derrière toute la ligne.
+   Bord haut/bas francs : un trait d'or fin sépare la bande du crème (premium),
+   à la place de l'ancienne coulée de fromage. */
 .rowDark {
   position: relative;
-  padding-block: clamp(var(--space-7), 8vw, var(--space-9));
+  padding-block: clamp(var(--space-8), 9vw, var(--space-10));
 }
 
 .rowDark::before {
@@ -35,30 +37,10 @@
   width: 100vw;
   transform: translateX(-50%);
   background-color: var(--color-brun);
+  /* fines lignes or en haut et en bas : liseré premium discret */
+  border-top: 1px solid rgba(201, 162, 75, 0.3);
+  border-bottom: 1px solid rgba(201, 162, 75, 0.3);
   z-index: -1;
-}
-
-/* Coulée de fromage fondu sur le bord haut de la bande marron.
-   SVG répété : coulures irrégulières (longueurs/largeurs variées) avec un
-   dégradé cheddar (jaune clair en haut → orange fondu en bas) et un highlight
-   de brillance, pour un rendu de fromage qui dégouline plus réaliste. */
-.rowDark::after {
-  content: '';
-  position: absolute;
-  left: 50%;
-  width: 100vw;
-  transform: translateX(-50%);
-  /* remonte au-dessus de la bande pour coiffer son bord supérieur */
-  top: -2px;
-  height: 96px;
-  z-index: -1;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='96' viewBox='0 0 400 96'%3E%3Cdefs%3E%3ClinearGradient id='c' x1='0' y1='0' x2='0' y2='1'%3E%3Cstop offset='0' stop-color='%23f7d65a'/%3E%3Cstop offset='0.55' stop-color='%23eebb3a'/%3E%3Cstop offset='1' stop-color='%23d98f2a'/%3E%3C/linearGradient%3E%3C/defs%3E%3Cpath fill='url(%23c)' d='M0 0h400v20C394 20 392 58 384 58 376 58 375 22 366 22 356 22 356 44 348 44 340 44 340 20 330 20 318 20 318 74 308 74 299 74 300 24 290 24 281 24 282 50 273 50 263 50 264 20 253 20 243 20 244 86 234 86 225 86 226 26 216 26 207 26 208 48 199 48 190 48 191 20 181 20 170 20 171 64 161 64 152 64 153 24 143 24 134 24 135 52 126 52 117 52 118 22 108 22 98 22 99 80 89 80 80 80 81 26 71 26 62 26 63 50 54 50 45 50 46 22 36 22 27 22 28 60 19 60 11 60 10 22 0 21Z'/%3E%3Cellipse cx='234' cy='40' rx='3' ry='14' fill='%23ffe27a' opacity='0.55'/%3E%3Cellipse cx='308' cy='38' rx='3' ry='12' fill='%23ffe27a' opacity='0.5'/%3E%3Cellipse cx='89' cy='42' rx='3' ry='12' fill='%23ffe27a' opacity='0.5'/%3E%3C/svg%3E");
-  background-repeat: repeat-x;
-  background-position: top center;
-  background-size: 400px 96px;
-  pointer-events: none;
-  /* léger flou directionnel + ombre portée pour le volume du fromage */
-  filter: drop-shadow(0 3px 2px rgba(0, 0, 0, 0.25));
 }
 
 /* Texte clair lisible sur le fond marron */
@@ -78,9 +60,9 @@
   color: rgba(255, 255, 255, 0.82);
 }
 
-/* ───────── Colonne média (vidéo décorative en forme organique) ─────────
-   Pas de cadre ni de fond : la vidéo est masquée dans un blob arrondi,
-   posée sur la page avec une ombre douce teintée par la couleur d'accent. */
+/* ───────── Colonne média (vidéo produit, cadrage éditorial) ─────────
+   Cadre portrait net aux coins légèrement arrondis, posé sur la page avec une
+   ombre chaude profonde. Fini les blobs : un cadrage magazine, plus premium. */
 .mediaCol {
   display: flex;
   justify-content: center;
@@ -88,18 +70,19 @@
 
 .media {
   position: relative;
-  width: min(100%, 460px);
-  aspect-ratio: 1 / 1;
+  width: min(100%, 480px);
+  aspect-ratio: 4 / 5;
   overflow: hidden;
-  /* Forme organique par défaut (blob asymétrique) */
-  border-radius: 62% 38% 55% 45% / 48% 52% 48% 52%;
-  /* Ombre douce teintée pour détacher la vidéo du fond beige */
-  box-shadow: 0 30px 60px -24px color-mix(in srgb, var(--accent) 55%, transparent);
+  border-radius: var(--radius-lg);
+  /* Ombre chaude profonde pour détacher la vidéo du fond crème */
+  box-shadow: var(--shadow-lg);
 }
 
-/* Variation de forme une ligne sur deux pour rythmer la section */
-.rowReversed .media {
-  border-radius: 42% 58% 38% 62% / 56% 44% 56% 44%;
+/* Sur fond marron : on remplace l'ombre (invisible sur sombre) par un fin
+   liseré or qui souligne le cadre. */
+.rowDark .media {
+  box-shadow: none;
+  border: 1px solid rgba(201, 162, 75, 0.35);
 }
 
 .video {
@@ -107,43 +90,69 @@
   height: 100%;
   object-fit: cover;
   display: block;
+  /* zoom doux au survol pour donner vie à l'image (desktop uniquement) */
+  transition: transform 600ms var(--ease-out);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .row:hover .video {
+    transform: scale(1.04);
+  }
 }
 
 /* ───────── Colonne texte ───────── */
 .textCol {
   display: flex;
   flex-direction: column;
-  gap: var(--space-2);
-  max-width: 480px;
+  align-items: flex-start;
+  gap: var(--space-3);
+  max-width: 460px;
 }
 
+/* Eyebrow format : petit label précédé d'un trait or (signal éditorial). */
 .format {
-  font-size: 12px;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-3);
+  font-size: 11px;
   font-weight: 600;
   text-transform: uppercase;
-  letter-spacing: 0.1em;
-  color: var(--color-texte-soft);
-  margin-bottom: var(--space-1);
+  letter-spacing: 0.18em;
+  color: var(--color-or-deep);
+}
+
+.format::before {
+  content: '';
+  width: 28px;
+  height: 1px;
+  background-color: currentColor;
+}
+
+.rowDark .format {
+  color: var(--color-or);
 }
 
 .nom {
   font-family: var(--font-serif);
-  font-size: clamp(28px, 4vw, 40px);
-  font-weight: 700;
+  font-size: clamp(32px, 4.5vw, 52px);
+  font-weight: 600;
+  letter-spacing: -0.025em;
   color: var(--color-brun);
-  line-height: 1.05;
+  line-height: 1.02;
 }
 
 .accroche {
   font-family: var(--font-serif);
   font-style: italic;
-  font-size: clamp(18px, 2vw, 22px);
-  color: var(--color-or-soft);
-  margin-bottom: var(--space-3);
+  font-weight: 400;
+  font-size: clamp(19px, 2.2vw, 24px);
+  line-height: 1.3;
+  color: var(--color-or-deep);
 }
 
 .description {
-  font-size: 16px;
-  line-height: 1.65;
+  font-size: 16.5px;
+  line-height: 1.7;
   color: var(--color-texte-soft);
+  margin-top: var(--space-2);
 }

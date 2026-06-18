@@ -1,9 +1,7 @@
-// Source de la vidéo hero pilotée au scroll (scroll scrubbing).
-// Déposer le fichier dans public/hero/ — voir public/hero/README.md pour le
-// format d'encodage recommandé (keyframe à chaque frame pour un seek fluide).
+// Visuel de fond du hero. On utilise désormais une image fixe premium
+// (photographie éditoriale, étiquettes kraft vierges, sans aucun texte
+// incrusté) plutôt qu'une vidéo. Remplaçable par la vraie photo du client.
 
-export const HERO_VIDEO = {
-  src: '/hero/hero.mp4',
-  // Image affichée tant que la vidéo n'est pas prête (1re frame idéalement).
-  poster: '/hero/poster.jpg',
+export const HERO_MEDIA = {
+  image: '/hero/hero-premium.webp',
 };

@@ -1,5 +1,6 @@
-// Données produits — placeholders à remplacer par les vraies sauces Whally's
-// Le client fournira : noms définitifs, descriptions, et visuels haute résolution
+// Données produits — descriptions placeholders à valider avec le client.
+// Visuels : photos premium générées (étiquettes kraft vierges prêtes pour le
+// branding définitif). Le client fournira ses textes/visuels finaux.
 
 export const PRODUITS = [
   {
@@ -11,8 +12,7 @@ export const PRODUITS = [
     format: 'Bouteille 1L',
     // Accent : brun rougeâtre dérivé du visuel
     couleur: '#7a3318',
-    image: '/box.png',
-    video: '/crouty.mp4',
+    image: '/produits/barbecue.webp',
   },
   {
     id: 'creme-poivree',
@@ -23,8 +23,7 @@ export const PRODUITS = [
     format: 'Bouteille 1L',
     // Accent : crème grisée
     couleur: '#b8a896',
-    image: '/box.png',
-    video: '/kebab.mp4',
+    image: '/produits/creme-poivree.webp',
   },
   {
     id: 'mister-onion',
@@ -35,8 +34,6 @@ export const PRODUITS = [
     format: 'Bouteille 1L',
     // Accent : orange chaleureux
     couleur: '#e08938',
-    image: '/box.png',
-    // En attente d'une 3e vidéo dédiée — réutilise crouty.mp4 pour l'instant
-    video: '/crouty.mp4',
+    image: '/produits/mister-onion.webp',
   },
 ];

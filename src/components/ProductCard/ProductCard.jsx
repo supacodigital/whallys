@@ -1,13 +1,10 @@
-import { useVideoInView } from '../../utils/useVideoInView.js';
 import styles from './ProductCard.module.css';
 
 /**
- * Ligne produit en 2 colonnes : vidéo d'un côté, description de l'autre.
+ * Ligne produit en 2 colonnes : photo d'un côté, description de l'autre.
  * L'ordre s'inverse une ligne sur deux (prop `reversed`) pour rythmer la section.
  */
 function ProductCard({ produit, reversed = false, dark = false }) {
-  const videoRef = useVideoInView();
-
   return (
     <article
       className={`${styles.row} ${reversed ? styles.rowReversed : ''} ${
@@ -17,14 +14,10 @@ function ProductCard({ produit, reversed = false, dark = false }) {
     >
       <div className={styles.mediaCol}>
         <div className={styles.media}>
-          <video
-            ref={videoRef}
-            src={produit.video}
-            poster={produit.image}
-            muted
-            loop
-            playsInline
-            preload="none"
+          <img
+            src={produit.image}
+            alt={produit.nom}
+            loading="lazy"
             className={styles.video}
           />
         </div>

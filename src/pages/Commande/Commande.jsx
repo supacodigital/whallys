@@ -16,6 +16,10 @@ import styles from './Commande.module.css';
 const initialItems = () =>
   PRODUITS.reduce((acc, p) => ({ ...acc, [p.id]: 0 }), {});
 
+// Visuel utilisé dans les cards/récap de cette page : on force le packshot
+// box.png (différent des photos éditoriales de la Home, qui restent inchangées).
+const ORDER_IMAGE = '/box.png';
+
 function Commande() {
   const [nomRestaurant, setNomRestaurant] = useState('');
   const [departement, setDepartement] = useState('');
@@ -104,7 +108,7 @@ function Commande() {
           id: p.id,
           nom: p.nom,
           format: p.format,
-          image: p.image,
+          image: ORDER_IMAGE,
           couleur: p.couleur,
           quantite: items[p.id],
         })),
@@ -137,13 +141,8 @@ function Commande() {
     <>
       <Navbar />
       <main className={styles.main}>
-        {/* Formes organiques animées en arrière-plan, purement décoratives */}
-        <div className={styles.bgShapes} aria-hidden="true">
-          <div className={`${styles.shape} ${styles.shapeTopLeft}`} />
-          <div className={`${styles.shape} ${styles.shapeTopLeftAccent}`} />
-          <div className={`${styles.shape} ${styles.shapeBottomRight}`} />
-          <div className={`${styles.shape} ${styles.shapeBottomRightAccent}`} />
-        </div>
+        {/* Halos radiaux doux en arrière-plan, purement décoratifs */}
+        <div className={styles.bgShapes} aria-hidden="true" />
 
         <div className="container">
           <header className={styles.header}>
@@ -263,7 +262,7 @@ function Commande() {
                         style={{ '--accent': p.couleur }}
                       >
                         <div className={styles.productThumb} aria-hidden="true">
-                          <img src={p.image} alt="" className={styles.productImage} />
+                          <img src={ORDER_IMAGE} alt="" className={styles.productImage} />
                         </div>
                         <div className={styles.productMeta}>
                           <span className={styles.productName}>{p.nom}</span>

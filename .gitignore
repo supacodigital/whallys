@@ -12,5 +12,10 @@ _video-originals/
 
 .playwright-mcp/
 
+# Screenshots de travail (captures de revue visuelle, non versionnées)
+/refonte-*.png
+/final-*.png
+/commande-*.png
+
 # Sources/documents internes client
 _brief/
