@@ -8,21 +8,38 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 56px;
-  height: 56px;
+  /* Bouton agrandi (demande client "bouton plus grand"). */
+  width: 68px;
+  height: 68px;
   border-radius: 50%;
   background-color: #25d366; /* vert officiel WhatsApp */
   color: var(--color-blanc);
-  box-shadow: 0 8px 24px -6px rgba(37, 211, 102, 0.6);
+  box-shadow: 0 10px 28px -6px rgba(37, 211, 102, 0.65);
 
   transition:
     transform 200ms var(--ease-out),
     box-shadow 200ms var(--ease-out);
 }
 
+@media (max-width: 767px) {
+  .button {
+    width: 60px;
+    height: 60px;
+  }
+}
+
 .icon {
-  width: 30px;
-  height: 30px;
+  /* Icône calée à ~70% du bouton pour bien le remplir (le SVG WhatsApp a déjà
+     une marge interne, donc on peut la pousser sans qu'elle touche les bords). */
+  width: 46px;
+  height: 46px;
+}
+
+@media (max-width: 767px) {
+  .icon {
+    width: 40px;
+    height: 40px;
+  }
 }
 
 @media (hover: hover) and (pointer: fine) {

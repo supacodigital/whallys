@@ -4,6 +4,14 @@
   grid-template-columns: 1fr;
   gap: var(--space-6);
   align-items: center;
+  /* Container interne : le produit n'est plus enveloppé par .container (il est
+     dans une carte plein écran), donc on borne et centre son contenu ici. */
+  width: 100%;
+  max-width: var(--container-max, 1280px);
+  margin-inline: auto;
+  padding-inline: clamp(var(--container-padding, 24px), 4vw, 56px);
+  /* cible d'ancre : compense la navbar fixe (84px) au scroll depuis le hero. */
+  scroll-margin-top: 100px;
 }
 
 @media (min-width: 768px) {
@@ -43,21 +51,98 @@
   z-index: -1;
 }
 
-/* Texte clair lisible sur le fond marron */
+/* ───────── Variante avec image de fond (pleine largeur + voile) ─────────
+   Autonome : crée sa propre bande 100vw (fonctionne que la ligne soit dark ou
+   claire). On pose l'image + un voile sombre dégradé pour la lisibilité.
+   Le voile assombrit le CÔTÉ DU TEXTE :
+   - ligne non inversée (image gauche, texte DROITE) → sombre à droite ;
+   - ligne inversée (image droite, texte GAUCHE) → sombre à gauche. */
+.rowFond {
+  position: relative;
+  padding-block: clamp(var(--space-8), 9vw, var(--space-10));
+}
+
+/* (Le collage des fonds est désormais géré par le sticky stack : chaque carte
+   est plein écran et colle, plus besoin de marge négative entre les lignes.) */
+
+.rowFond::before {
+  content: '';
+  position: absolute;
+  inset-block: 0;
+  left: 50%;
+  width: 100vw;
+  transform: translateX(-50%);
+  z-index: -1;
+  background-color: var(--color-brun);
+  /* voile sombre à droite (côté texte) par défaut + image */
+  background-image:
+    linear-gradient(
+      260deg,
+      rgba(26, 14, 8, 0.82) 0%,
+      rgba(26, 14, 8, 0.55) 45%,
+      rgba(26, 14, 8, 0.35) 100%
+    ),
+    var(--fond);
+  background-size: cover, cover;
+  background-position: center, center;
+  background-repeat: no-repeat, no-repeat;
+}
+
+/* Ligne inversée : texte à gauche → on assombrit la gauche. */
+.rowReversed.rowFond::before {
+  background-image:
+    linear-gradient(
+      100deg,
+      rgba(26, 14, 8, 0.82) 0%,
+      rgba(26, 14, 8, 0.55) 45%,
+      rgba(26, 14, 8, 0.35) 100%
+    ),
+    var(--fond);
+}
+
+/* Texte clair lisible sur le fond sombre (vaut pour toute ligne avec image de
+   fond, y compris les lignes claires comme la Fromagère). */
+.rowFond .format {
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.rowFond .nom {
+  color: var(--color-blanc);
+}
+
+.rowFond .accroche {
+  color: var(--color-or);
+}
+
+.rowFond .description {
+  color: rgba(255, 255, 255, 0.85);
+}
+
+/* Texte clair lisible sur le fond marron + tailles agrandies (esprit Crousty :
+   titre imposant, accroche et description plus grandes). */
 .rowDark .format {
   color: rgba(255, 255, 255, 0.6);
 }
 
 .rowDark .nom {
   color: var(--color-blanc);
+  font-size: clamp(40px, 5.6vw, 68px);
 }
 
 .rowDark .accroche {
   color: var(--color-or);
+  font-size: clamp(22px, 2.8vw, 30px);
 }
 
 .rowDark .description {
   color: rgba(255, 255, 255, 0.82);
+  font-size: clamp(17px, 2.1vw, 20px);
+  line-height: 1.65;
+}
+
+/* Colonne texte un peu plus large pour accompagner l'agrandissement. */
+.rowDark .textCol {
+  max-width: 560px;
 }
 
 /* ───────── Colonne média (vidéo produit, cadrage éditorial) ─────────
@@ -78,9 +163,15 @@
   box-shadow: var(--shadow-lg);
 }
 
-/* Sur fond marron : on remplace l'ombre (invisible sur sombre) par un fin
-   liseré or qui souligne le cadre. */
-.rowDark .media {
+/* Variante cadre carré (photo carrée — comme la section Crousty). */
+.mediaCarre {
+  aspect-ratio: 1 / 1;
+}
+
+/* Sur fond sombre (marron ou image de fond) : on remplace l'ombre claire
+   (invisible) par un fin liseré or qui souligne le cadre. */
+.rowDark .media,
+.rowFond .media {
   box-shadow: none;
   border: 1px solid rgba(201, 162, 75, 0.35);
 }
@@ -106,7 +197,7 @@
   flex-direction: column;
   align-items: flex-start;
   gap: var(--space-3);
-  max-width: 460px;
+  max-width: 520px;
 }
 
 /* Eyebrow format : petit label précédé d'un trait or (signal éditorial). */
@@ -132,6 +223,33 @@
   color: var(--color-or);
 }
 
+/* Titre + logo Whally's strictement sur une seule ligne (logo à droite). */
+.titleRow {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  width: 100%;
+}
+
+/* Le titre ne wrappe pas : il reste sur une ligne, le logo se cale à sa droite. */
+.titleRow .nom {
+  flex: 0 1 auto;
+  white-space: nowrap;
+}
+
+.titleLogo {
+  /* taille calée sur la hauteur du titre pour rester homogène */
+  height: clamp(34px, 4.2vw, 48px);
+  width: auto;
+  flex-shrink: 0;
+}
+
+/* Sur la ligne dark (Cheddar), le titre est agrandi (clamp …68px) : on agrandit
+   le logo en conséquence pour qu'il reste ajusté à la hauteur du titre. */
+.rowDark .titleLogo {
+  height: clamp(44px, 5.6vw, 64px);
+}
+
 .nom {
   font-family: var(--font-serif);
   font-size: clamp(32px, 4.5vw, 52px);
@@ -155,4 +273,54 @@
   line-height: 1.7;
   color: var(--color-texte-soft);
   margin-top: var(--space-2);
+}
+
+/* ───────── Variante texte agrandi (mêmes tailles que la ligne Cheddar) ───────── */
+.rowLarge .nom {
+  font-size: clamp(40px, 5.6vw, 68px);
+}
+
+.rowLarge .titleLogo {
+  height: clamp(44px, 5.6vw, 64px);
+}
+
+.rowLarge .accroche {
+  font-size: clamp(22px, 2.8vw, 30px);
+}
+
+.rowLarge .description {
+  font-size: clamp(17px, 2.1vw, 20px);
+  line-height: 1.65;
+}
+
+.rowLarge .textCol {
+  max-width: 560px;
+}
+
+/* ───────── Mobile : titre + logo sur UNE seule ligne (demande client) ─────────
+   Plutôt que de faire passer le logo sous le titre, on réduit la taille du titre
+   et du logo pour que tout tienne sur une ligne, même sur les variantes agrandies
+   (.rowDark, .rowLarge) et jusqu'aux très petits écrans (320px).
+   Placé en fin de fichier ET qualifié par .titleRow pour passer devant les règles
+   de tailles agrandies (.rowLarge .nom, etc.) sans !important. */
+@media (max-width: 767px) {
+  .titleRow {
+    flex-wrap: nowrap;
+    gap: var(--space-2);
+  }
+
+  /* min-width:0 autorise le titre à rétrécir dans le flex au lieu de pousser
+     le logo hors de l'écran ; nowrap conservé pour rester sur une ligne. */
+  .titleRow .nom {
+    white-space: nowrap;
+    min-width: 0;
+    /* taille en vw : « Sauce Fromagère » (le plus long) + logo tiennent de 375px
+       jusqu'à 320px sans déborder. */
+    font-size: clamp(20px, 6.4vw, 30px);
+  }
+
+  /* Logo calé sur la hauteur de titre réduite. */
+  .titleRow .titleLogo {
+    height: clamp(24px, 7.2vw, 36px);
+  }
 }

@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@emailjs/browser": "^4.4.1",
+    "@fontsource/anton": "^5.2.7",
     "@fontsource/fraunces": "^5.1.0",
     "@fontsource/inter": "^5.1.0",
     "lucide-react": "^0.460.0",

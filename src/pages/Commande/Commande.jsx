@@ -11,6 +11,7 @@ import {
   formatDateHuman,
 } from '../../utils/livraison.js';
 import { sendCommande } from '../../utils/sendCommande.js';
+import { useNoindex } from '../../utils/useNoindex.js';
 import styles from './Commande.module.css';
 
 const initialItems = () =>
@@ -21,6 +22,9 @@ const initialItems = () =>
 const ORDER_IMAGE = '/box.png';
 
 function Commande() {
+  // Page réservée aux clients : on empêche son indexation par les moteurs.
+  useNoindex();
+
   const [nomRestaurant, setNomRestaurant] = useState('');
   const [departement, setDepartement] = useState('');
   const [items, setItems] = useState(initialItems);

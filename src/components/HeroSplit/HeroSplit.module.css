@@ -1,0 +1,232 @@
+/* ───────── Hero split-screen : 3 panneaux « VS » pleine hauteur ─────────
+   Inspiré du hero de référence Sabaï : chaque sauce occupe un panneau plein,
+   image de fond d'ambiance + voile sombre, titre énorme ancré en bas. */
+.hero {
+  position: relative;
+  width: 100%;
+  min-height: 100vh;
+  min-height: 100dvh;
+  background-color: var(--color-brun);
+  overflow: hidden;
+}
+
+/* Rangée des 3 panneaux. flex pour permettre l'effet « expand » au survol
+   (le panneau survolé grandit, les autres se resserrent). */
+.panels {
+  display: flex;
+  width: 100%;
+  min-height: 100vh;
+  min-height: 100dvh;
+}
+
+/* ───────── Panneau (une sauce) ───────── */
+.panel {
+  position: relative;
+  flex: 1 1 0;
+  /* min-width:0 : autorise les panneaux à se resserrer sous leur contenu
+     pendant l'effet expand sans déborder. */
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  overflow: hidden;
+  text-decoration: none;
+  color: #fff;
+  isolation: isolate;
+  /* Transition de la largeur (flex-grow) pour l'effet expand au survol. */
+  transition: flex-grow 600ms var(--ease-out);
+
+  /* Entrée en cascade au montage : révélation par le bas (clip-path) + fondu. */
+  opacity: 0;
+  clip-path: inset(0 0 100% 0);
+  animation: panelReveal 800ms var(--ease-out) forwards;
+  animation-delay: calc(var(--i) * 90ms + 120ms);
+}
+
+@keyframes panelReveal {
+  to {
+    opacity: 1;
+    clip-path: inset(0 0 0 0);
+  }
+}
+
+/* ───────── Image de fond ─────────
+   Pseudo-élément dédié : on peut zoomer l'image au survol sans toucher au voile
+   ni au contenu (transform isolé = pas de scintillement du texte). */
+.bg {
+  position: absolute;
+  inset: 0;
+  z-index: -2;
+  background-image: var(--fond);
+  background-size: cover;
+  background-position: center;
+  /* léger zoom de départ pour avoir de la marge au mouvement (pas de bord vide). */
+  transform: scale(1.05);
+  transition: transform 900ms var(--ease-out);
+}
+
+/* ───────── Voile sombre ─────────
+   Dégradé du bas (sombre) vers le haut (transparent) : garde le titre lisible
+   tout en laissant respirer la photo en haut. Une pointe d'accent coloré en bas
+   relie le panneau à la couleur de sa sauce. */
+.scrim {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background:
+    linear-gradient(
+      to top,
+      rgba(20, 11, 6, 0.92) 0%,
+      rgba(20, 11, 6, 0.55) 32%,
+      rgba(20, 11, 6, 0.15) 60%,
+      rgba(20, 11, 6, 0.25) 100%
+    ),
+    radial-gradient(
+      130% 80% at 50% 100%,
+      color-mix(in srgb, var(--accent) 30%, transparent) 0%,
+      transparent 55%
+    );
+  transition: opacity 600ms var(--ease-out);
+}
+
+/* ───────── Contenu (ancré en bas, centré) ───────── */
+.content {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: clamp(28px, 4vw, 64px);
+  /* dégage le badge WhatsApp flottant + bas d'écran mobile. */
+  padding-bottom: clamp(40px, 6vw, 72px);
+}
+
+/* ───────── Photo produit (packshot, centrée au-dessus du titre) ─────────
+   Bouteille détourée posée sur le panneau avec une ombre chaude qui la détache
+   du fond. Léger flottement au survol (desktop) pour la rendre vivante. */
+.produit {
+  width: clamp(180px, 20vw, 300px);
+  height: auto;
+  object-fit: contain;
+  margin-bottom: clamp(14px, 1.6vw, 24px);
+  filter: drop-shadow(0 18px 26px rgba(0, 0, 0, 0.55));
+  transition: transform 600ms var(--ease-out);
+  pointer-events: none;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .panel:hover .produit {
+    transform: translateY(-8px) scale(1.04);
+  }
+}
+
+.eyebrow {
+  display: inline-block;
+  font-family: var(--font-sans);
+  font-size: clamp(11px, 0.9vw, 13px);
+  font-weight: 600;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: clamp(8px, 1vw, 14px);
+  text-shadow: 0 1px 10px rgba(0, 0, 0, 0.5);
+}
+
+.titre {
+  font-family: var(--font-serif);
+  font-weight: 700;
+  font-size: clamp(40px, 5vw, 84px);
+  letter-spacing: -0.03em;
+  line-height: 0.95;
+  color: #fff;
+  text-shadow: 0 4px 30px rgba(0, 0, 0, 0.45);
+}
+
+.sousTitre {
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-weight: 400;
+  font-size: clamp(16px, 1.5vw, 22px);
+  color: rgba(255, 255, 255, 0.82);
+  margin-top: clamp(6px, 0.8vw, 12px);
+  text-shadow: 0 2px 14px rgba(0, 0, 0, 0.5);
+}
+
+/* ───────── Survol (desktop, pointeur fin) ───────── */
+@media (hover: hover) and (pointer: fine) {
+  /* Le panneau survolé s'élargit, les autres se resserrent (effet expand). */
+  .panels:hover .panel {
+    flex-grow: 0.7;
+  }
+
+  .panels .panel:hover {
+    flex-grow: 1.8;
+  }
+
+  /* Zoom doux de la photo + voile un peu plus clair sur le panneau actif. */
+  .panel:hover .bg {
+    transform: scale(1.12);
+  }
+
+  .panel:hover .scrim {
+    opacity: 0.82;
+  }
+}
+
+/* Feedback de press (léger enfoncement du fond). */
+.panel:active .bg {
+  transform: scale(1.02);
+}
+
+/* ───────── Mobile : 3 panneaux empilés verticalement ───────── */
+@media (max-width: 767px) {
+  .hero,
+  .panels {
+    min-height: 0;
+  }
+
+  .panels {
+    flex-direction: column;
+  }
+
+  .panel {
+    /* hauteur fixe par panneau : assez haut pour loger la photo produit
+       agrandie + le titre avec de l'air. Lecture au scroll. */
+    flex: 0 0 auto;
+    min-height: 48vh;
+    min-height: 48dvh;
+    justify-content: flex-end;
+    /* pas d'effet expand sur mobile : on neutralise la transition de largeur. */
+    transition: none;
+  }
+
+  /* Le premier panneau dégage la navbar fixe (84px). */
+  .panel:first-child {
+    padding-top: calc(84px + var(--space-4));
+  }
+}
+
+/* ───────── Mouvement réduit ─────────
+   On garde le fondu (aide à la compréhension), on retire les mouvements :
+   pas de clip-path révélé, pas de pop, pas de zoom. */
+@media (prefers-reduced-motion: reduce) {
+  .panel {
+    clip-path: none;
+    animation: panelFade 300ms ease forwards;
+  }
+
+  .bg,
+  .scrim {
+    transition: none;
+  }
+
+  .panel:hover .bg {
+    transform: scale(1.05);
+  }
+
+  @keyframes panelFade {
+    to {
+      opacity: 1;
+    }
+  }
+}

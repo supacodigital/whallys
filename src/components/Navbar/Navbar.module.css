@@ -1,7 +1,7 @@
 .header {
-  /* Hauteur de la barre — réutilisée pour positionner le menu mobile,
-     évite toute valeur magique en dur. */
-  --nav-h: 68px;
+  /* Hauteur de la barre — réutilisée pour positionner le menu mobile.
+     Desktop : 60px (logo) + 2×12px (padding vertical) = 84px. */
+  --nav-h: 84px;
 
   position: fixed;
   top: 0;
@@ -56,8 +56,22 @@
 }
 
 .logo {
-  height: 44px;
+  /* Logo agrandi (demande client) — reste contenu sur la hauteur de barre. */
+  height: 60px;
   width: auto;
+}
+
+@media (max-width: 767px) {
+  /* Mobile : logo plus petit (52px) → la barre fait 52 + 2×12 = 76px. On aligne
+     --nav-h sur cette hauteur réelle pour que le menu mobile démarre PILE sous la
+     barre (sinon un trou de 8px décalait le menu). */
+  .header {
+    --nav-h: 76px;
+  }
+
+  .logo {
+    height: 52px;
+  }
 }
 
 /* Desktop nav */
@@ -110,27 +124,123 @@
   inset: auto 0 0 0;
 }
 
-.ctaLink {
-  display: inline-flex;
-  align-items: center;
-  padding: 10px 22px;
-  background-color: var(--color-brun);
-  color: var(--color-blanc);
-  border-radius: var(--radius-pill);
-  font-size: 14px;
-  font-weight: 600;
-  letter-spacing: 0.02em;
-  transition: transform 160ms var(--ease-out), background-color 200ms var(--ease-out);
+/* ───────── Menu déroulant "Nos produits" (desktop) ───────── */
+.dropdown {
+  position: relative;
 }
 
-@media (hover: hover) and (pointer: fine) {
-  .ctaLink:hover {
-    background-color: var(--color-brun-soft);
+/* "Pont" invisible sous le déclencheur : couvre le gap entre le trigger et le
+   panneau pour que le survol ne se coupe pas dans le vide (sinon le panneau se
+   referme dès que la souris quitte le texte). */
+.dropdown::after {
+  content: '';
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  height: 16px;
+}
+
+.dropdownTrigger {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  cursor: pointer;
+}
+
+.dropdownChevron {
+  transition: transform 200ms var(--ease-out);
+}
+
+.dropdown:hover .dropdownChevron,
+.dropdownTrigger[aria-expanded='true'] .dropdownChevron {
+  transform: rotate(180deg);
+}
+
+/* Panneau : ancré sous le déclencheur, aligné à gauche. Scale-in depuis le haut
+   (origine = le trigger) plutôt que depuis le centre. */
+.dropdownPanel {
+  position: absolute;
+  top: calc(100% + 14px);
+  left: 50%;
+  transform: translateX(-50%);
+  min-width: 268px;
+  padding: var(--space-3);
+  background-color: var(--color-bg);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-lg);
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  z-index: 60;
+
+  transform-origin: top center;
+  transition: opacity 180ms var(--ease-out), transform 180ms var(--ease-out);
+}
+
+/* Petit triangle reliant visuellement le panneau au déclencheur. */
+.dropdownPanel::before {
+  content: '';
+  position: absolute;
+  top: -6px;
+  left: 50%;
+  width: 12px;
+  height: 12px;
+  background-color: var(--color-bg);
+  border-left: 1px solid var(--color-border);
+  border-top: 1px solid var(--color-border);
+  transform: translateX(-50%) rotate(45deg);
+}
+
+/* Entrée animée (scale léger, jamais depuis 0). */
+@starting-style {
+  .dropdownPanel {
+    opacity: 0;
+    transform: translateX(-50%) translateY(-6px) scale(0.97);
   }
 }
 
-.ctaLink:active {
-  transform: scale(0.97);
+.dropdownItem {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: 10px 12px;
+  border-radius: var(--radius-md);
+  transition: background-color 160ms var(--ease-out);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .dropdownItem:hover {
+    background-color: rgba(44, 26, 14, 0.05);
+  }
+}
+
+/* Pastille colorée par sauce (DA cohérente, --accent injecté en inline). */
+.dropdownDot {
+  flex-shrink: 0;
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background-color: var(--accent, var(--color-or));
+}
+
+.dropdownItemText {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+
+.dropdownItemName {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--color-brun);
+}
+
+.dropdownItemAccroche {
+  font-size: 12.5px;
+  color: var(--color-texte-soft);
 }
 
 /* Burger mobile */
@@ -239,27 +349,37 @@
   transform: scale(0.98);
 }
 
-.mobileCta {
-  margin-top: auto;
-  display: inline-flex;
+/* Groupe "Nos produits" : le lien titre garde son style .mobileLink, la
+   sous-liste des sauces vient juste en dessous, légèrement en retrait. */
+.mobileGroup {
+  display: flex;
+  flex-direction: column;
+}
+
+.mobileSublist {
+  display: flex;
+  flex-direction: column;
+  padding-top: var(--space-3);
+  padding-bottom: var(--space-2);
+}
+
+.mobileSublink {
+  display: flex;
   align-items: center;
-  justify-content: center;
-  width: 100%;
-  padding: 16px 24px;
-  background-color: var(--color-brun);
-  color: var(--color-blanc);
-  border-radius: var(--radius-pill);
-  font-size: 17px;
-  font-weight: 600;
-  transition: transform 160ms var(--ease-out), background-color 200ms var(--ease-out);
+  gap: var(--space-3);
+  padding: var(--space-3) 0;
+  font-size: 19px;
+  font-weight: 500;
+  color: var(--color-texte-soft);
+  transition: transform 160ms var(--ease-out), color 200ms var(--ease-out);
+}
+
+.mobileSublink:active {
+  transform: scale(0.98);
 }
 
 @media (hover: hover) and (pointer: fine) {
-  .mobileCta:hover {
-    background-color: var(--color-brun-soft);
+  .mobileSublink:hover {
+    color: var(--color-brun);
   }
-}
-
-.mobileCta:active {
-  transform: scale(0.97);
 }

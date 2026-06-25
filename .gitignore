@@ -19,3 +19,11 @@ _video-originals/
 
 # Sources/documents internes client
 _brief/
+
+# Images de référence / maquettes à la racine (non utilisées par le code)
+/hero-carousel.jpeg
+/hero-sauces.jpeg
+/hero-sauces2.jpeg
+
+# Documentation interne (non versionnée)
+/DOCUMENTATION.md

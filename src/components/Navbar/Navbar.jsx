@@ -1,8 +1,9 @@
 import { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Menu, X } from 'lucide-react';
+import { Menu, X, ChevronDown } from 'lucide-react';
 import logo from '../../assets/logo.png';
 import { WHATSAPP_NUMBER, WHATSAPP_MESSAGE } from '../../data/contact.js';
+import { PRODUITS } from '../../data/produits.js';
 import styles from './Navbar.module.css';
 
 // Lien WhatsApp (numéro + message centralisés dans data/contact.js)
@@ -13,6 +14,8 @@ const WHATSAPP_URL = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent
 function Navbar() {
   const [open, setOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  // Dropdown "Nos produits" (desktop) ouvert au survol / focus.
+  const [productsOpen, setProductsOpen] = useState(false);
   const location = useLocation();
 
   // La navbar n'est transparente que sur la Home (hero vidéo sombre derrière).
@@ -22,6 +25,10 @@ function Navbar() {
   // Lien vers la section produits : ancre simple sur la Home, sinon on revient
   // à la Home avec l'ancre pour que le navigateur scrolle jusqu'à la section.
   const produitsHref = isHome ? '#produits' : '/#produits';
+
+  // Lien vers une sauce précise : ancre sur la ligne produit (id = produit.id),
+  // posée sur la Home. Les pages détail prendront le relais plus tard.
+  const sauceHref = (id) => (isHome ? `#${id}` : `/#${id}`);
 
   // Fermer le menu mobile lors d'un changement de route
   useEffect(() => {
@@ -65,9 +72,53 @@ function Navbar() {
         </Link>
 
         <nav className={styles.desktopNav} aria-label="Navigation principale">
-          <a href={produitsHref} className={styles.navLink}>
-            Nos produits
-          </a>
+          {/* Menu déroulant "Nos produits" : ouvert au survol (souris) et au
+              focus clavier. Le wrapper porte le survol pour couvrir le pont
+              entre le déclencheur et le panneau (pas de trou qui referme). */}
+          <div
+            className={styles.dropdown}
+            onMouseEnter={() => setProductsOpen(true)}
+            onMouseLeave={() => setProductsOpen(false)}
+          >
+            <a
+              href={produitsHref}
+              className={`${styles.navLink} ${styles.dropdownTrigger}`}
+              aria-haspopup="true"
+              aria-expanded={productsOpen}
+              onFocus={() => setProductsOpen(true)}
+            >
+              Nos produits
+              <ChevronDown
+                size={15}
+                className={styles.dropdownChevron}
+                aria-hidden="true"
+              />
+            </a>
+
+            {productsOpen && (
+              <div className={styles.dropdownPanel} role="menu">
+                {PRODUITS.map((p) => (
+                  <a
+                    key={p.id}
+                    href={sauceHref(p.id)}
+                    role="menuitem"
+                    className={styles.dropdownItem}
+                    style={{ '--accent': p.couleur }}
+                    onClick={() => setProductsOpen(false)}
+                  >
+                    <span className={styles.dropdownDot} aria-hidden="true" />
+                    <span className={styles.dropdownItemText}>
+                      <span className={styles.dropdownItemName}>{p.nom}</span>
+                      <span className={styles.dropdownItemAccroche}>
+                        {p.accroche}
+                      </span>
+                    </span>
+                  </a>
+                ))}
+              </div>
+            )}
+          </div>
+
           <a
             href={WHATSAPP_URL}
             target="_blank"
@@ -76,9 +127,6 @@ function Navbar() {
           >
             Nous contacter
           </a>
-          <Link to="/commande" className={styles.ctaLink}>
-            Commander
-          </Link>
         </nav>
 
         <button
@@ -96,9 +144,31 @@ function Navbar() {
       {open && (
         <div className={styles.mobileMenu} role="dialog" aria-label="Menu mobile">
           <nav className={styles.mobileNav}>
-            <a href={produitsHref} className={styles.mobileLink} onClick={() => setOpen(false)}>
-              Nos produits
-            </a>
+            {/* "Nos produits" : titre de groupe + sous-liste des 3 sauces. */}
+            <div className={styles.mobileGroup}>
+              <a
+                href={produitsHref}
+                className={styles.mobileLink}
+                onClick={() => setOpen(false)}
+              >
+                Nos produits
+              </a>
+              <div className={styles.mobileSublist}>
+                {PRODUITS.map((p) => (
+                  <a
+                    key={p.id}
+                    href={sauceHref(p.id)}
+                    className={styles.mobileSublink}
+                    style={{ '--accent': p.couleur }}
+                    onClick={() => setOpen(false)}
+                  >
+                    <span className={styles.dropdownDot} aria-hidden="true" />
+                    {p.nom}
+                  </a>
+                ))}
+              </div>
+            </div>
+
             <a
               href={WHATSAPP_URL}
               target="_blank"
@@ -108,9 +178,6 @@ function Navbar() {
             >
               Nous contacter
             </a>
-            <Link to="/commande" className={styles.mobileCta} onClick={() => setOpen(false)}>
-              Commander
-            </Link>
           </nav>
         </div>
       )}

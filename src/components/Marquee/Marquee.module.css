@@ -1,0 +1,108 @@
+/* ───────── Bandeau de texte défilant (hero → produits) ───────── */
+.banner {
+  position: relative;
+  overflow: hidden;
+  background: var(--color-blanc);
+  color: var(--color-or);
+  padding-block: clamp(14px, 1.8vw, 20px);
+  /* Filets fins or en haut/bas pour cadrer le bandeau. */
+  border-block: 1px solid rgba(201, 162, 75, 0.25);
+}
+
+/* Dégradés latéraux : le texte s'estompe sur les bords plutôt que d'être coupé net. */
+.banner::before,
+.banner::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: clamp(40px, 8vw, 120px);
+  z-index: 1;
+  pointer-events: none;
+}
+
+.banner::before {
+  left: 0;
+  background: linear-gradient(to right, var(--color-blanc), transparent);
+}
+
+.banner::after {
+  right: 0;
+  background: linear-gradient(to left, var(--color-blanc), transparent);
+}
+
+/* La piste contient deux séquences ; on la translate de -50 % en boucle pour un
+   défilement sans couture (chaque séquence fait donc 50 % de la piste). */
+.track {
+  display: flex;
+  width: max-content;
+  animation: scroll 32s linear infinite;
+}
+
+@keyframes scroll {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+.seq {
+  display: flex;
+  align-items: center;
+  list-style: none;
+  flex-shrink: 0;
+}
+
+.item {
+  display: inline-flex;
+  align-items: center;
+  gap: clamp(20px, 3vw, 40px);
+  padding-inline: clamp(10px, 1.5vw, 20px);
+}
+
+.text {
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-weight: 500;
+  font-size: clamp(16px, 2vw, 22px);
+  letter-spacing: -0.01em;
+  white-space: nowrap;
+  /* Or un peu plus profond que le séparateur : lisible sur fond blanc. */
+  color: var(--color-or-soft);
+}
+
+/* Étoile séparatrice or entre chaque accroche. */
+.dot {
+  font-size: clamp(11px, 1.3vw, 14px);
+  color: var(--color-or);
+  opacity: 0.9;
+}
+
+/* Survol : on suspend le défilement (uniquement sur dispositif à pointeur). */
+@media (hover: hover) and (pointer: fine) {
+  .banner:hover .track {
+    animation-play-state: paused;
+  }
+}
+
+/* Mouvement réduit : bandeau figé, contenu centré et non dupliqué visuellement. */
+@media (prefers-reduced-motion: reduce) {
+  .track {
+    animation: none;
+    width: 100%;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+
+  /* La séquence dupliquée n'a pas de sens si rien ne défile. */
+  .seq:last-child {
+    display: none;
+  }
+
+  .banner::before,
+  .banner::after {
+    display: none;
+  }
+}

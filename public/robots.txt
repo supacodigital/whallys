@@ -1,0 +1,6 @@
+# Whally's — règles d'indexation
+# La page de commande est réservée aux clients (accès par lien direct) :
+# on demande aux moteurs de ne pas l'explorer ni l'indexer.
+User-agent: *
+Disallow: /commande
+Allow: /

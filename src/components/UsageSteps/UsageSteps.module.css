@@ -1,0 +1,227 @@
+/* ───────── Section « L'utilisation » : 3 étapes + flèches ───────── */
+.section {
+  padding-block: clamp(48px, 8vw, 96px);
+}
+
+.head {
+  text-align: center;
+  margin-bottom: clamp(32px, 5vw, 56px);
+}
+
+.kicker {
+  font-family: var(--font-sans);
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--color-or-deep);
+  margin-bottom: 10px;
+}
+
+.title {
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-weight: 500;
+  font-size: clamp(28px, 5vw, 44px);
+  letter-spacing: -0.02em;
+  color: var(--color-texte);
+}
+
+/* Rangée des étapes : horizontale desktop, verticale mobile. La <ol> contient
+   aussi les flèches (en <li>), d'où l'usage de flex plutôt qu'une grille. */
+.steps {
+  list-style: none;
+  display: flex;
+  align-items: stretch;
+  justify-content: center;
+  gap: clamp(12px, 2.5vw, 28px);
+}
+
+/* ───────── Card étape ───────── */
+.card {
+  flex: 1 1 0;
+  max-width: 340px;
+  display: flex;
+  flex-direction: column;
+  background: var(--color-blanc);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  box-shadow: var(--shadow-md);
+
+  /* Apparition en cascade au scroll (stagger par --i). */
+  opacity: 0;
+  transform: translateY(16px);
+  animation: stepIn 560ms cubic-bezier(0.23, 1, 0.32, 1) forwards;
+  animation-delay: calc(var(--i) * 90ms);
+}
+
+@keyframes stepIn {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.media {
+  position: relative;
+  /* Cadre portrait : respecte le format natif des photos (599×900 ≈ 2/3),
+     plus de recadrage paysage qui rognait le sujet. */
+  aspect-ratio: 2 / 3;
+  background: var(--color-bg-warm);
+  font-size: 0; /* supprime l'espace inline sous l'image */
+}
+
+.image {
+  /* position absolue dans .media (position:relative) : l'image remplit
+     exactement le cadre dicté par aspect-ratio (4/3) au lieu d'imposer sa
+     propre hauteur intrinsèque au conteneur. Sans ça, l'image portrait
+     (599×900) étirait la .media en 2/3 très haute → cadre disproportionné. */
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Badge numéro d'étape, posé en haut à gauche de la photo. */
+.badge {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  width: 36px;
+  height: 36px;
+  display: grid;
+  place-items: center;
+  border-radius: var(--radius-pill);
+  background: var(--color-brun);
+  color: var(--color-or);
+  font-family: var(--font-serif);
+  font-size: 18px;
+  font-weight: 600;
+  box-shadow: var(--shadow-md);
+}
+
+.body {
+  padding: clamp(16px, 2vw, 22px);
+  text-align: center;
+}
+
+.cardTitle {
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-weight: 500;
+  font-size: clamp(18px, 2.2vw, 22px);
+  color: var(--color-texte);
+  margin-bottom: 6px;
+}
+
+.cardText {
+  font-family: var(--font-sans);
+  font-size: 15px;
+  line-height: 1.5;
+  color: var(--color-texte-soft);
+}
+
+/* ───────── Séparateur : pastille or + flèche ───────── */
+.arrow {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  align-self: center;
+}
+
+.pill {
+  display: grid;
+  place-items: center;
+  width: clamp(38px, 4vw, 48px);
+  height: clamp(38px, 4vw, 48px);
+  border-radius: var(--radius-pill);
+  /* Dégradé or chaud + liseré subtil, raccord avec la DA brun/or. */
+  background: linear-gradient(145deg, var(--color-or) 0%, var(--color-or-soft) 100%);
+  box-shadow:
+    0 6px 16px -6px rgba(138, 109, 44, 0.55),
+    inset 0 1px 0 rgba(255, 255, 255, 0.35);
+  color: var(--color-brun);
+
+  /* Pop d'apparition au scroll, synchronisé avec le stagger des cards. */
+  opacity: 0;
+  transform: scale(0.6);
+  animation: pillPop 360ms cubic-bezier(0.23, 1, 0.32, 1) forwards;
+  animation-delay: var(--pop-delay, 0ms);
+}
+
+.pillIcon {
+  width: 55%;
+  height: 55%;
+  stroke-width: 2.5;
+}
+
+@keyframes pillPop {
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* Survol : la card se soulève légèrement (gated tactile pour éviter les
+   faux positifs au tap). */
+@media (hover: hover) and (pointer: fine) {
+  .card {
+    transition: transform 200ms cubic-bezier(0.23, 1, 0.32, 1),
+      box-shadow 200ms ease;
+  }
+
+  .card:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-lg);
+  }
+}
+
+/* ───────── Mobile : pile verticale, flèche pivotée vers le bas ───────── */
+@media (max-width: 720px) {
+  .steps {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .card {
+    width: 100%;
+    max-width: 380px;
+    /* En colonne, .steps n'a pas de hauteur définie : le flex:1 1 0 hérité du
+       desktop résolvait la hauteur de la card à 0 (cards écrasées, images
+       invisibles). flex:0 0 auto → chaque card prend sa hauteur de contenu. */
+    flex: 0 0 auto;
+  }
+
+  /* La pastille reste ronde : seule la flèche pivote vers le bas. */
+  .pillIcon {
+    transform: rotate(90deg);
+  }
+}
+
+/* ───────── Mouvement réduit : on garde le fondu, on retire le déplacement ───────── */
+@media (prefers-reduced-motion: reduce) {
+  .card {
+    transform: none;
+    animation: fadeIn 300ms ease forwards;
+    animation-delay: 0ms;
+  }
+
+  .card:hover {
+    transform: none;
+  }
+
+  /* Pastilles : pas de pop, on affiche directement l'état final. */
+  .pill {
+    opacity: 1;
+    transform: none;
+    animation: none;
+  }
+
+  @keyframes fadeIn {
+    to {
+      opacity: 1;
+    }
+  }
+}

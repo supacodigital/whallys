@@ -5,66 +5,87 @@
   position: relative;
   z-index: 1;
   background-color: var(--color-bg);
-  border-top-left-radius: clamp(48px, 6vw, 64px);
-  border-top-right-radius: clamp(48px, 6vw, 64px);
-  /* Pas de marge négative : le volet démarre pile sous le hero (ses coins
-     arrondis ne sont donc jamais visibles dans le hero au repos). L'effet
-     volet vient du hero sticky : le volet remonte par-dessus lui au scroll. */
-  /* Le radius doit rogner le contenu qui touche le bord arrondi */
-  overflow: hidden;
+  /* Plus d'effet volet : pas de coins arrondis, la section produits suit
+     directement le hero sans recouvrement. */
+  /* overflow-x: clip (et non overflow: hidden) : contient le débordement
+     horizontal des fonds 100vw SANS casser position: sticky des cartes
+     produits (un ancêtre en overflow:hidden désactive le sticky). */
+  overflow-x: clip;
 }
 
-/* ───────── Hero — contenu (titre, sous-titre, CTA) ─────────
-   La mécanique (vidéo de fond, scrim, layout) vit dans components/HeroVideo/.
-   Ici on stylise uniquement le contenu injecté en children, aligné à gauche. */
-.heroTitle {
-  font-size: clamp(44px, 6.5vw, 84px);
+/* ───────── Bande CTA sous le hero split ─────────
+   Le hero split occupe tout l'écran ; le titre d'accroche + le sous-titre + le
+   CTA WhatsApp + la mention livraison vivent dans une bande compacte juste en
+   dessous, sur fond blanc, centrée. */
+.heroCtaBar {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: var(--space-4);
+  padding: clamp(48px, 7vw, 88px) var(--container-padding);
+  background-color: var(--color-blanc);
+  color: var(--color-texte);
+}
+
+.heroBarTitle {
+  font-size: clamp(28px, 4vw, 52px);
   font-weight: 600;
-  letter-spacing: -0.035em;
-  line-height: 1;
-  margin-bottom: var(--space-5);
-  color: var(--color-blanc);
-  text-shadow: 0 2px 30px rgba(0, 0, 0, 0.4);
+  letter-spacing: -0.03em;
+  line-height: 1.1;
+  color: var(--color-brun);
+  max-width: 24ch;
 }
 
-.heroTitle em {
+.heroBarTitle em {
+  /* « restaurateurs » : juste doré, pas d'italique (reste dans la ligne du titre). */
+  font-style: normal;
+  color: var(--color-or-deep);
+}
+
+/* Sous-titre sous le H1 (accroche courte « Le goût qui fidélise vos clients »). */
+.heroBarSubtitle {
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-size: clamp(18px, 2vw, 26px);
+  line-height: 1.4;
+  color: var(--color-texte-soft);
+  max-width: 30ch;
+  /* resserre l'écart avec le titre (le gap général est plus large). */
+  margin-top: calc(-1 * var(--space-2));
+}
+
+.heroBarSubtitle em {
   font-style: italic;
   font-weight: 400;
-  /* or plus lumineux sur fond vidéo sombre pour ressortir sans crier */
-  color: #e3c272;
+  color: var(--color-or-deep);
 }
 
-.heroSubtitle {
-  font-size: clamp(16px, 1.8vw, 19px);
-  line-height: 1.6;
-  color: rgba(255, 255, 255, 0.9);
-  max-width: 440px;
-  margin-bottom: var(--space-7);
-  text-shadow: 0 1px 16px rgba(0, 0, 0, 0.3);
-}
-
+/* CTA principal en vert WhatsApp (signale l'ouverture de WhatsApp). */
 .heroCta {
   display: inline-flex;
   align-items: center;
   gap: var(--space-3);
-  padding: 14px 14px 14px 28px;
-  background-color: var(--color-blanc);
-  color: var(--color-brun);
+  padding: 15px 28px;
+  background-color: #25d366; /* vert officiel WhatsApp */
+  color: #fff;
   border-radius: var(--radius-pill);
   font-size: 16px;
   font-weight: 600;
-  transition: transform 160ms var(--ease-out), background-color 200ms var(--ease-out);
+  box-shadow: 0 10px 28px -8px rgba(37, 211, 102, 0.55);
+  transition: transform 160ms var(--ease-out), background-color 200ms var(--ease-out),
+    box-shadow 200ms var(--ease-out);
 }
 
 @media (hover: hover) and (pointer: fine) {
   .heroCta:hover {
-    background-color: var(--color-or);
+    background-color: #20bd5a;
+    box-shadow: 0 14px 32px -8px rgba(37, 211, 102, 0.7);
+    transform: translateY(-2px);
   }
 
-  .heroCta:hover .heroCtaIcon {
-    transform: translateX(2px);
-    background-color: var(--color-brun);
-    color: var(--color-blanc);
+  .heroCta:hover .heroCtaWa {
+    transform: scale(1.08);
   }
 }
 
@@ -72,16 +93,25 @@
   transform: scale(0.97);
 }
 
-.heroCtaIcon {
+.heroCtaWa {
+  width: 24px;
+  height: 24px;
+  transition: transform 200ms var(--ease-out);
+}
+
+/* Mention livraison sous le CTA (dans la bande CTA, l'espacement vient du gap). */
+.heroDelivery {
   display: inline-flex;
   align-items: center;
-  justify-content: center;
-  width: 36px;
-  height: 36px;
-  border-radius: 50%;
-  background-color: var(--color-brun);
-  color: var(--color-blanc);
-  transition: transform 200ms var(--ease-out), background-color 200ms var(--ease-out);
+  gap: var(--space-2);
+  font-size: 14px;
+  font-weight: 500;
+  letter-spacing: 0.01em;
+  color: var(--color-texte-soft);
+}
+
+.heroDelivery svg {
+  color: var(--color-or-deep);
 }
 
 /* ───────── Sections (Produits, Utilisation) ───────── */
@@ -115,6 +145,16 @@
   text-align: center;
   max-width: 660px;
   margin: 0 auto clamp(var(--space-8), 7vw, var(--space-9));
+}
+
+/* Section produits : pas de sous-titre (retiré). Le bloc d'en-tête est plus
+   compact, on resserre l'espace sous l'eyebrow et la marge basse. */
+.sectionHeaderProduits {
+  max-width: 820px;
+}
+
+.sectionHeaderProduits .sectionEyebrow {
+  margin-bottom: var(--space-4);
 }
 
 /* Eyebrow centré encadré de deux traits or (signal éditorial premium). */
@@ -154,6 +194,14 @@
   color: var(--color-or-deep);
 }
 
+/* Variante section produits : titre plus grand et imposant (demande client),
+   marge basse réduite puisqu'il n'y a plus de sous-titre sous lui. */
+.sectionTitleProduits {
+  font-size: clamp(56px, 9vw, 104px);
+  letter-spacing: -0.035em;
+  margin-bottom: 0;
+}
+
 .sectionLede {
   font-size: clamp(17px, 2vw, 20px);
   color: var(--color-texte-soft);
@@ -175,6 +223,113 @@
   display: flex;
   flex-direction: column;
   gap: clamp(var(--space-7), 9vw, var(--space-9));
+}
+
+/* ───────── Sticky stack (cartes produits empilées) ─────────
+   Chaque produit colle en haut puis la carte suivante glisse par-dessus.
+   Effet subtil : la carte dessous se rétrécit et s'assombrit légèrement quand
+   la suivante la recouvre (animation scroll-driven, dégradée proprement si non
+   supportée → simple empilement sticky). */
+.productsStack {
+  position: relative;
+}
+
+.stackItem {
+  position: sticky;
+  top: 0;
+  /* Carte plein écran : chaque produit occupe toute la hauteur du viewport. */
+  min-height: 100vh;
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  /* bord haut franc (pas d'arrondi) : les cartes se touchent sans laisser
+     apparaître de trait clair du sheet derrière */
+  overflow: hidden;
+  /* fond opaque SOMBRE (pas beige) : si un pixel de fond transparaît au bord,
+     il reste sombre — pas de trait clair entre deux cartes à fond sombre. */
+  background-color: var(--color-brun);
+  /* ombre sombre sur le bord haut pour détacher la carte qui monte (pas de
+     halo clair qui formerait un liseré). */
+  box-shadow: 0 -16px 40px -24px rgba(0, 0, 0, 0.55);
+}
+
+/* Le produit à l'intérieur remplit toute la hauteur de la carte, pour que son
+   fond image (::before, inset-block:0) couvre tout le stackItem sans laisser de
+   bande beige en haut/bas. flex:1 l'étire sans toucher à son display interne. */
+.stackItem > * {
+  width: 100%;
+  flex: 1;
+}
+
+/* La dernière carte n'a pas besoin de coller (rien ne passe au-dessus). */
+.stackItem:last-child {
+  position: relative;
+}
+
+/* ───────── Mobile : pas d'effet de volet ─────────
+   Sur mobile, l'empilement sticky (cartes qui glissent l'une par-dessus
+   l'autre) est désactivé : chaque carte défile normalement à la suite. Ça
+   simplifie la lecture sur petit écran et évite que le sticky + 100vh ne
+   désoriente le lazy-loading des images plus bas (section utilisation). */
+@media (max-width: 767px) {
+  .stackItem {
+    position: relative;
+    /* hauteur libre : la carte s'adapte à son contenu au lieu d'occuper
+       tout le viewport (un plein écran par produit est trop lourd à scroller). */
+    min-height: 0;
+    box-shadow: none;
+  }
+}
+
+/* Effet scroll-driven : la carte rétrécit/assombrit quand elle sort par le haut
+   (recouverte par la suivante). Ne s'active que si le navigateur supporte les
+   timelines de scroll ; sinon l'empilement sticky simple reste. */
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) and (min-width: 768px) {
+    .stackItem {
+      animation: stackShrink linear both;
+      animation-timeline: view();
+      /* l'effet se joue quand la carte traverse le haut du viewport */
+      animation-range: exit-crossing 0% exit-crossing 100%;
+      transform-origin: center top;
+      /* indique au navigateur que transform va changer au scroll → couche GPU
+         stable, pas de re-promotion à chaque frame. */
+      will-change: transform;
+    }
+  }
+}
+
+/* On assombrit via un voile en opacity (composité GPU) plutôt que filter:
+   brightness, qui se re-peint à chaque frame de scroll. Le voile ne s'active
+   qu'avec le scroll-driven (desktop), synchronisé sur la même timeline. */
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) and (min-width: 768px) {
+    .stackItem::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      z-index: 2;
+      pointer-events: none;
+      background-color: #000;
+      opacity: 0;
+      animation: stackDim linear both;
+      animation-timeline: view();
+      animation-range: exit-crossing 0% exit-crossing 100%;
+    }
+  }
+}
+
+@keyframes stackShrink {
+  to {
+    transform: scale(0.94);
+  }
+}
+
+@keyframes stackDim {
+  to {
+    opacity: 0.3;
+  }
 }
 
 /* ───────── Vidéos d'utilisation ───────── */
@@ -245,4 +400,5 @@
   letter-spacing: -0.01em;
 }
 
-/* La bande CTA finale a été fusionnée dans le Footer (components/Footer/). */
+/* La section « L'utilisation » vit désormais dans son propre composant
+   (components/UsageSteps/). La bande CTA finale est fusionnée dans le Footer. */

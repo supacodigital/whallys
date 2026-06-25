@@ -1,0 +1,272 @@
+/* ───────── Bannière Crousty — design GTA / Vice City pleine largeur ─────────
+   Tranche volontairement avec le style éditorial du reste du site : couleurs
+   néon, lettering cartoon, ambiance synthwave. */
+.banner {
+  position: relative;
+  /* déborde du container pour occuper toute la largeur de l'écran */
+  width: 100vw;
+  left: 50%;
+  transform: translateX(-50%);
+  overflow: hidden;
+  isolation: isolate;
+  /* cible d'ancre : compense la navbar fixe */
+  scroll-margin-top: 100px;
+  /* padding vertical resserré (la bannière n'a pas besoin d'autant d'air) */
+  padding-block: clamp(var(--space-7), 6vw, var(--space-9));
+  color: #fff;
+  /* Immersion bord à bord : on mange le gap de .productsRows au-dessus et le
+     padding-bottom de la section en dessous, pour que le violet touche
+     directement la ligne précédente et la section suivante (plus de bande
+     crème en haut/bas). */
+  margin-top: calc(-1 * clamp(var(--space-7), 9vw, var(--space-9)));
+  margin-bottom: calc(-1 * clamp(64px, 12vw, 128px));
+}
+
+/* Image de fond GTA (photo fournie par le client). */
+.bg {
+  position: absolute;
+  inset: 0;
+  background-size: cover;
+  background-position: center;
+  z-index: -3;
+}
+
+/* Voile par-dessus la photo : léger assombrissement (surtout à gauche, sous la
+   colonne texte) pour garder le texte blanc lisible, sans dénaturer la photo. */
+.bgFallback {
+  position: absolute;
+  inset: 0;
+  z-index: -2;
+  background: linear-gradient(
+    90deg,
+    rgba(26, 10, 46, 0.62) 0%,
+    rgba(26, 10, 46, 0.35) 45%,
+    rgba(26, 10, 46, 0.15) 100%
+  );
+}
+
+/* Grille de perspective synthwave : désactivée maintenant qu'on a la vraie
+   photo GTA en fond (elle apporte déjà l'ambiance). On garde le nœud DOM mais
+   on le masque pour ne pas surcharger le visuel. */
+.grid {
+  display: none;
+}
+
+/* ───────── Contenu : 2 colonnes (visuel / texte) ───────── */
+.inner {
+  position: relative;
+  display: grid;
+  grid-template-columns: 1.1fr 0.9fr;
+  align-items: center;
+  gap: clamp(var(--space-6), 5vw, var(--space-9));
+  /* Descend tout le contenu vers le bas de la section (demande client). */
+  margin-top: clamp(var(--space-7), 8vw, var(--space-10));
+}
+
+@media (max-width: 767px) {
+  .inner {
+    grid-template-columns: 1fr;
+    gap: var(--space-6);
+    text-align: center;
+  }
+}
+
+/* ───────── Mobile : pas de marges négatives ─────────
+   Les marges négatives haut/bas servaient l'immersion bord-à-bord de l'effet
+   volet (desktop), où le .stackItem parent était plein écran et absorbait le
+   débordement. Sur mobile le volet est désactivé (.stackItem en min-height:0
+   + overflow:hidden), donc le margin-bottom négatif poussait la bannière HORS
+   de son conteneur clippé → le bas de la section était coupé. On les annule. */
+@media (max-width: 767px) {
+  .banner {
+    margin-top: 0;
+    margin-bottom: 0;
+  }
+}
+
+/* ───────── Visuel : couronne + lettering + bowl ───────── */
+.visual {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.crown {
+  width: clamp(40px, 5vw, 58px);
+  height: auto;
+  color: #ffffff;
+  fill: #ffffff;
+  filter: drop-shadow(0 2px 0 #d12c8a) drop-shadow(0 0 12px rgba(255, 126, 219, 0.8));
+  margin-bottom: -6px;
+  transform: rotate(-8deg);
+  align-self: flex-start;
+  margin-left: 8%;
+}
+
+/* ───────── Lettering "SAUCE CROUSTY" style GTA ───────── */
+.lettering {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  line-height: 0.82;
+  /* léger penché façon logo arcade */
+  transform: skewX(-7deg);
+}
+
+.letteringTop {
+  font-family: var(--font-display);
+  font-size: clamp(28px, 4.5vw, 52px);
+  letter-spacing: 0.04em;
+  color: #fff;
+  -webkit-text-stroke: 2px #1a0a2e;
+  text-shadow: 3px 3px 0 #1a0a2e;
+  margin-left: 6%;
+}
+
+.letteringMain {
+  font-family: var(--font-display);
+  font-size: clamp(64px, 11vw, 132px);
+  letter-spacing: 0.01em;
+  text-transform: uppercase;
+  /* remplissage rose magenta (couleur Crousty du PDF) */
+  color: #ff49b0;
+  /* contour épais sombre + halo néon (empilement d'ombres pour l'épaisseur) */
+  -webkit-text-stroke: 3px #ffffff;
+  text-shadow:
+    4px 4px 0 #1a0a2e,
+    6px 6px 0 rgba(26, 10, 46, 0.6),
+    0 0 24px rgba(255, 73, 176, 0.7);
+}
+
+/* ───────── Bowl produit ───────── */
+.product {
+  position: relative;
+  margin-top: clamp(-8px, -1vw, -16px);
+  width: min(100%, 420px);
+  aspect-ratio: 1 / 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.bowl {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  filter: drop-shadow(0 24px 30px rgba(0, 0, 0, 0.5));
+  transition: transform 500ms var(--ease-out);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .banner:hover .bowl {
+    transform: translateY(-6px) scale(1.02);
+  }
+}
+
+/* Vapeur qui s'échappe du bowl */
+.steam {
+  position: absolute;
+  top: 6%;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 55%;
+  height: 45%;
+  z-index: -1;
+  pointer-events: none;
+}
+
+.steam span {
+  position: absolute;
+  bottom: 0;
+  width: 26px;
+  height: 26px;
+  background: rgba(255, 255, 255, 0.5);
+  border-radius: 50%;
+  filter: blur(10px);
+  opacity: 0;
+  animation: steamRise 4.5s ease-in-out infinite;
+  /* will-change : promeut chaque bulle sur sa propre couche GPU pour que le
+     blur soit peint UNE fois (pas re-peint à chaque frame de l'animation). */
+  will-change: transform, opacity;
+}
+
+/* Mobile : on coupe la vapeur (3 bulles floutées animées en boucle = coûteux
+   sur GPU mobile, pour un détail à peine perceptible sur petit écran). */
+@media (max-width: 767px) {
+  .steam {
+    display: none;
+  }
+}
+
+.steam span:nth-child(1) {
+  left: 28%;
+  animation-delay: 0s;
+}
+.steam span:nth-child(2) {
+  left: 50%;
+  animation-delay: 1.5s;
+}
+.steam span:nth-child(3) {
+  left: 70%;
+  animation-delay: 3s;
+}
+
+@keyframes steamRise {
+  0% {
+    opacity: 0;
+    transform: translateY(0) scale(0.6);
+  }
+  25% {
+    opacity: 0.5;
+  }
+  60% {
+    opacity: 0.25;
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(-130%) scale(1.5);
+  }
+}
+
+/* ───────── Texte produit ───────── */
+.textCol {
+  position: relative;
+  max-width: 520px;
+}
+
+.accroche {
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-size: clamp(24px, 3vw, 34px);
+  line-height: 1.25;
+  color: #ffd6f0;
+  margin-bottom: var(--space-5);
+  text-shadow: 0 2px 12px rgba(0, 0, 0, 0.4);
+}
+
+.description {
+  font-size: clamp(17px, 2.1vw, 20px);
+  line-height: 1.65;
+  color: rgba(255, 255, 255, 0.92);
+  text-shadow: 0 1px 8px rgba(0, 0, 0, 0.35);
+}
+
+@media (max-width: 767px) {
+  .textCol {
+    margin-inline: auto;
+  }
+}
+
+/* Accessibilité : coupe les mouvements décoratifs. */
+@media (prefers-reduced-motion: reduce) {
+  .steam span {
+    animation: none;
+    opacity: 0;
+  }
+  .bowl,
+  .banner:hover .bowl {
+    transition: none;
+    transform: none;
+  }
+}
