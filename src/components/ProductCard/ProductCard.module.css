@@ -88,6 +88,23 @@
   background-repeat: no-repeat, no-repeat;
 }
 
+/* Fromagère (rowFusion) : on décale l'image de fond légèrement vers la gauche
+   pour éloigner la zone orange/jaune du titre « Sauce Fromagère » côté droit,
+   ET on renforce le voile sombre à droite (côté titre) pour que le « S » reste
+   toujours sur du sombre, jamais sur la zone claire orangée du fond. */
+.rowFusion.rowFond::before {
+  background-image:
+    linear-gradient(
+      270deg,
+      rgba(26, 14, 8, 0.92) 0%,
+      rgba(26, 14, 8, 0.9) 50%,
+      rgba(26, 14, 8, 0.6) 72%,
+      rgba(26, 14, 8, 0.3) 100%
+    ),
+    var(--fond);
+  background-position: center, 35% center;
+}
+
 /* Ligne inversée : texte à gauche → on assombrit la gauche. */
 .rowReversed.rowFond::before {
   background-image:
@@ -143,6 +160,259 @@
 /* Colonne texte un peu plus large pour accompagner l'agrandissement. */
 .rowDark .textCol {
   max-width: 560px;
+}
+
+/* ───────── Rendu « fusion » : produits détourés fondus sur le fond ─────────
+   Pas de cadre, pas de fond rectangulaire : les produits détourés (WebP
+   transparent) sont posés directement sur le background de section. Une ombre
+   au sol en drop-shadow les ancre dans la scène (sinon ils « flottent »).
+   Composition duo : le bowl domine, le tacos chevauche derrière en accent. */
+.fusionStage {
+  position: relative;
+  width: min(100%, 540px);
+  aspect-ratio: 1 / 1;
+  /* Marge de respiration pour que les produits puissent déborder du stage
+     sans être coupés (ils sont volontairement un peu hors-cadre). */
+  margin-inline: auto;
+}
+
+.fusionItem {
+  position: absolute;
+  display: block;
+  width: 100%;
+  height: auto;
+  object-fit: contain;
+  /* Ombre portée douce au sol : ancre le produit dans la scène. Double couche
+     (proche + diffuse) pour un rendu naturel, jamais collé. */
+  filter:
+    drop-shadow(0 18px 22px rgba(20, 10, 4, 0.38))
+    drop-shadow(0 6px 8px rgba(20, 10, 4, 0.28));
+  transition: transform 600ms var(--ease-out);
+  will-change: transform;
+}
+
+/* Produit 1 (bowl) : dominant, devant, légèrement décalé et penché à gauche.
+   Animation float continue : lévitation + léger balancement, désynchronisée
+   du tacos (durée/amplitude différentes) pour un rendu vivant, pas mécanique.
+   Le rotate de base (-10deg) est intégré dans les keyframes. */
+.fusionItem1 {
+  width: 78%;
+  left: 0;
+  bottom: 4%;
+  z-index: 2;
+  transform: rotate(-10deg);
+  animation: float-bowl 5s ease-in-out infinite;
+}
+
+/* Produit 2 (tacos) : accent, derrière le bowl, en haut à droite, plus petit.
+   Float plus ample et plus rapide (esprit « ingrédient qui flotte »). */
+.fusionItem2 {
+  width: 58%;
+  right: 0;
+  top: 0;
+  z-index: 1;
+  transform: rotate(-4deg);
+  animation: float-tacos 4.2s ease-in-out infinite;
+  /* léger décalage pour désynchroniser du bowl */
+  animation-delay: -1.5s;
+}
+
+/* Lévitation du bowl : monte de 14px en tanguant légèrement (-10° → -13°). */
+@keyframes float-bowl {
+  0%, 100% {
+    transform: rotate(-10deg) translateY(0);
+  }
+  50% {
+    transform: rotate(-13deg) translateY(-14px);
+  }
+}
+
+/* Lévitation du tacos : plus ample (20px) + balancement inverse (-4° → 0°),
+   pour qu'ils ne bougent jamais à l'unisson. */
+@keyframes float-tacos {
+  0%, 100% {
+    transform: rotate(-4deg) translateY(0);
+  }
+  50% {
+    transform: rotate(0deg) translateY(-20px);
+  }
+}
+
+/* Accessibilité : on coupe le mouvement si l'utilisateur le demande, en
+   conservant la rotation statique de base. */
+@media (prefers-reduced-motion: reduce) {
+  .fusionItem1 {
+    animation: none;
+    transform: rotate(-10deg);
+  }
+  .fusionItem2 {
+    animation: none;
+    transform: rotate(-4deg);
+  }
+}
+
+/* ───────── Vapeur CSS « plat chaud » (Fromagère) ─────────
+   Deux sources (bowl + tacos). Chaque source = conteneur positionné au sommet
+   du produit, contenant 3 volutes (.steamPuff). Chaque volute est un disque flou
+   blanc qui monte, grandit, ondule légèrement et se dissipe en fondu. */
+.steam {
+  position: absolute;
+  z-index: 3;
+  width: 32%;
+  height: 50%;
+  pointer-events: none;
+  /* la vapeur part du bas du conteneur (sommet du produit) et monte */
+  display: flex;
+  justify-content: center;
+}
+
+/* Source bowl : au-dessus du bowl (gauche, bas du stage). */
+.steamBowl {
+  left: 22%;
+  bottom: 46%;
+}
+
+/* Source tacos : au-dessus du tacos (droite, haut du stage). */
+.steamTacos {
+  right: 16%;
+  bottom: 56%;
+  width: 26%;
+}
+
+.steamPuff {
+  position: absolute;
+  bottom: 0;
+  width: 60%;
+  aspect-ratio: 1 / 1;
+  border-radius: 50%;
+  /* disque flou translucide (vapeur claire et chaude) */
+  background: radial-gradient(
+    circle,
+    rgba(255, 252, 245, 0.55) 0%,
+    rgba(255, 250, 240, 0.28) 40%,
+    transparent 70%
+  );
+  filter: blur(8px);
+  opacity: 0;
+  transform: translateY(0) scale(0.6);
+  animation: steam-rise 6s ease-in-out infinite;
+}
+
+/* Désynchronisation des 3 volutes par source (delay + position horizontale). */
+.steamPuff:nth-child(1) { left: 8%;  animation-delay: 0s;    animation-duration: 6s; }
+.steamPuff:nth-child(2) { left: 34%; animation-delay: -2.2s; animation-duration: 7s; }
+.steamPuff:nth-child(3) { left: 20%; animation-delay: -4.1s; animation-duration: 5.4s; }
+
+/* Montée + dilatation + ondulation + dissipation. */
+@keyframes steam-rise {
+  0% {
+    opacity: 0;
+    transform: translate(0, 0) scale(0.5);
+  }
+  20% {
+    opacity: 0.8;
+  }
+  50% {
+    transform: translate(-14px, -120%) scale(1.05);
+  }
+  80% {
+    opacity: 0.35;
+  }
+  100% {
+    opacity: 0;
+    transform: translate(10px, -240%) scale(1.5);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .steam {
+    display: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .fusionItem,
+  .rowFusion:hover .fusionItem1,
+  .rowFusion:hover .fusionItem2 {
+    transition: none;
+  }
+  .fusionItem1,
+  .rowFusion:hover .fusionItem1 {
+    transform: rotate(-10deg);
+  }
+  .fusionItem2,
+  .rowFusion:hover .fusionItem2 {
+    transform: rotate(-4deg);
+  }
+}
+
+/* ───────── Variante fusion à 4 produits (Cheddar) ─────────
+   Grille 2×2 : chaque produit dans sa cellule (les 4 bien visibles, aucune
+   superposition), légère rotation par cellule pour garder l'énergie « collage ».
+   Placement explicite :  bowl ↖   pot ↗
+                          burrito ↙  sandwich ↘
+   On neutralise le positionnement absolu hérité du duo. */
+.fusionStage4 {
+  aspect-ratio: 1 / 1;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  grid-template-rows: repeat(2, 1fr);
+  place-items: center;
+  gap: clamp(var(--space-2), 1.5vw, var(--space-4));
+}
+
+.fusionStage4 .fusionItem {
+  position: static;
+  width: 100%;
+  max-height: 100%;
+  z-index: auto;
+}
+
+/* Cheddar : les PRODUITS restent fixes (rotation de base légère pour le style).
+   L'animation se fait AUTOUR d'eux, via une couche de rayons rotatifs placée
+   derrière le groupe (voir .fusionRays plus bas). On redéfinit la rotation de
+   base pour neutraliser l'animation float héritée du duo Fromagère (item1/2). */
+.fusionStage4 .fusionItem1 { grid-column: 2; grid-row: 2; transform: rotate(-4deg); animation: none; }
+.fusionStage4 .fusionItem2 { grid-column: 1; grid-row: 1; transform: rotate(3deg);  animation: none; }
+.fusionStage4 .fusionItem3 { grid-column: 2; grid-row: 1; transform: rotate(4deg);  animation: none; }
+.fusionStage4 .fusionItem4 { grid-column: 1; grid-row: 2; transform: rotate(-6deg); animation: none; }
+
+/* ───────── Rayons rotatifs derrière les 4 produits (Cheddar) ─────────
+   Couche décorative : un éventail de rayons (style burst promo/street-food) qui
+   tourne lentement en arrière-plan, centré sur le groupe. Les produits, posés
+   au-dessus (z-index plus élevé), restent fixes. */
+.fusionRays {
+  position: absolute;
+  z-index: 0;
+  top: 50%;
+  left: 50%;
+  /* plus large que le stage pour que les rayons dépassent derrière les produits */
+  width: 135%;
+  aspect-ratio: 1 / 1;
+  pointer-events: none;
+  /* Rayons en dégradé conique : alternance transparent / orange cheddar voilé. */
+  background: repeating-conic-gradient(
+    from 0deg,
+    rgba(217, 112, 31, 0.16) 0deg 7deg,
+    transparent 7deg 20deg
+  );
+  /* Masque radial : opaque au centre, fondu vers les bords (pas de cercle net). */
+  -webkit-mask-image: radial-gradient(circle, #000 12%, rgba(0,0,0,0.5) 45%, transparent 70%);
+  mask-image: radial-gradient(circle, #000 12%, rgba(0,0,0,0.5) 45%, transparent 70%);
+  transform: translate(-50%, -50%) rotate(0deg);
+  animation: rays-spin 40s linear infinite;
+}
+
+@keyframes rays-spin {
+  from { transform: translate(-50%, -50%) rotate(0deg); }
+  to   { transform: translate(-50%, -50%) rotate(360deg); }
+}
+
+/* Les produits passent au-dessus des rayons. */
+.fusionStage4 .fusionItem { z-index: 1; }
+
+@media (prefers-reduced-motion: reduce) {
+  .fusionRays { animation: none; }
 }
 
 /* ───────── Colonne média (vidéo produit, cadrage éditorial) ─────────
@@ -281,7 +551,10 @@
 }
 
 .rowLarge .titleLogo {
-  height: clamp(44px, 5.6vw, 64px);
+  /* Logo réduit : à 64px il poussait le titre « Sauce Fromagère » (nowrap) hors
+     de la colonne sur laptop ~1366px, faisant déborder le « S » sur la zone
+     claire du fond. Une taille plus contenue garde titre + logo dans la colonne. */
+  height: clamp(34px, 3.6vw, 44px);
 }
 
 .rowLarge .accroche {

@@ -413,6 +413,26 @@
   font-variant-numeric: tabular-nums;
 }
 
+/* Poids total (kg) en complément du nombre de cartons */
+.totalKg {
+  color: var(--color-or-deep);
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+/* Confirmation de la date choisie, sous le calendrier */
+.selectedDate {
+  font-size: 14px;
+  color: var(--color-texte-soft);
+  line-height: 1.5;
+}
+
+.selectedDate strong {
+  color: var(--color-brun);
+  font-weight: 600;
+  text-transform: capitalize;
+}
+
 /* ───────── Erreur / Submit ───────── */
 .errorBox {
   display: flex;
@@ -807,4 +827,107 @@
   font-size: 13px;
   color: var(--color-texte-soft);
   line-height: 1.4;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   RESPONSIVE MOBILE (≤ 640px)
+   Objectif : la card formulaire exploite toute la largeur disponible.
+   Sur mobile, le .container global impose 24px de gutter de chaque côté + le
+   padding interne de la card grignote encore l'espace. On réduit les deux pour
+   un rendu quasi edge-to-edge, plus confortable sur petit écran.
+   ═══════════════════════════════════════════════════════════════════════════ */
+@media (max-width: 640px) {
+  /* Gutter latéral réduit : la card respire jusqu'aux bords (12px de marge) */
+  .main :global(.container) {
+    padding-inline: 12px;
+  }
+
+  /* Un peu moins d'espace en haut (navbar) pour remonter le contenu */
+  .main {
+    padding-top: clamp(88px, 22vw, 104px);
+  }
+
+  .header {
+    margin-bottom: var(--space-5);
+    gap: var(--space-3);
+  }
+
+  /* ── Card formulaire : pleine largeur, padding interne resserré ── */
+  .form {
+    max-width: none;
+    padding: var(--space-4) var(--space-3);
+    border-radius: var(--radius-md);
+    gap: var(--space-5);
+    /* Ombre plus discrète sur mobile (la card occupe tout l'écran) */
+    box-shadow: 0 12px 32px -20px rgba(44, 26, 14, 0.18);
+  }
+
+  /* ── Grille produits : on enlève le double padding (card + grille) ──
+     La grille n'a plus besoin de son propre fond/padding : elle hérite de la
+     card. Les cartes produits prennent ainsi toute la largeur utile. */
+  .productsGrid {
+    padding: 0;
+    background-color: transparent;
+    gap: var(--space-2);
+  }
+
+  /* Card produit : ligne horizontale pleine largeur, fond toujours visible
+     pour bien délimiter chaque produit même sans le padding de la grille. */
+  .productCard {
+    padding: var(--space-3);
+    background-color: var(--color-bg);
+    border: 1px solid var(--color-border);
+  }
+
+  .productCardHasQty {
+    border-color: color-mix(in srgb, var(--accent) 35%, var(--color-border));
+  }
+
+  /* Total aligné à droite, bien lisible */
+  .total {
+    font-size: 15px;
+  }
+
+  /* ── Champs texte/select : zone de frappe confortable ── */
+  .input,
+  .select {
+    padding: 14px 16px;
+  }
+
+  /* ── Calendrier : pleine largeur, jours plus grands (cible tactile) ── */
+  .selectedDate {
+    font-size: 13px;
+  }
+
+  /* ── Bouton submit : pleine largeur, plus facile à viser au pouce ── */
+  .submit {
+    width: 100%;
+    padding: 16px 24px;
+  }
+
+  /* ── Trust signals : pleine largeur eux aussi ── */
+  .trustWrap {
+    margin-top: var(--space-7);
+  }
+
+  .trustCard {
+    padding: var(--space-3) var(--space-4);
+  }
+
+  /* ── Carte succès : même logique edge-to-edge ── */
+  .successCard {
+    max-width: none;
+    padding: var(--space-6) var(--space-4);
+  }
+}
+
+/* Très petits écrans (≤ 380px) : on resserre encore un cran */
+@media (max-width: 380px) {
+  .main :global(.container) {
+    padding-inline: 8px;
+  }
+
+  .form {
+    padding: var(--space-4) var(--space-3);
+  }
 }

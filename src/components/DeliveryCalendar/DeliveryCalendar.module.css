@@ -1,0 +1,234 @@
+/* Calendrier de livraison — DA Whally's (brun / or / crème). */
+
+.calendar {
+  background-color: var(--color-bg);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  padding: var(--space-4);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  /* Entrée douce au mount (fade + slide léger) */
+  opacity: 1;
+  transform: translateY(0);
+  transition: opacity 300ms var(--ease-out), transform 300ms var(--ease-out);
+}
+
+@starting-style {
+  .calendar {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+}
+
+/* ───────── En-tête (mois + navigation) ───────── */
+.head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+}
+
+.monthLabel {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--color-brun);
+  text-transform: capitalize;
+  font-variant-numeric: tabular-nums;
+  text-align: center;
+  flex: 1;
+}
+
+.navBtn {
+  width: 36px;
+  height: 36px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-md);
+  background-color: var(--color-blanc);
+  border: 1px solid var(--color-border);
+  color: var(--color-brun);
+  flex-shrink: 0;
+  transition: transform 160ms var(--ease-out),
+    background-color 200ms var(--ease-out), border-color 200ms var(--ease-out),
+    opacity 200ms var(--ease-out);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .navBtn:hover:not(:disabled) {
+    border-color: var(--color-or);
+    background-color: color-mix(in srgb, var(--color-or) 12%, var(--color-blanc));
+  }
+}
+
+.navBtn:active:not(:disabled) {
+  transform: scale(0.94);
+}
+
+.navBtn:focus-visible {
+  outline: none;
+  border-color: var(--color-or);
+  box-shadow: 0 0 0 3px rgba(201, 162, 75, 0.55);
+}
+
+.navBtn:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+
+/* ───────── Bandeau jours de la semaine ───────── */
+.weekdays {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 4px;
+}
+
+.weekday {
+  text-align: center;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--color-texte-soft);
+  padding-bottom: 2px;
+}
+
+/* ───────── Grille des jours ───────── */
+.grid {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.week {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 4px;
+}
+
+.empty {
+  aspect-ratio: 1;
+}
+
+.day {
+  aspect-ratio: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-md);
+  font-size: 14px;
+  font-weight: 500;
+  font-variant-numeric: tabular-nums;
+  color: rgba(26, 26, 26, 0.32);
+  background-color: transparent;
+  border: 1px solid transparent;
+  cursor: not-allowed;
+  /* On n'anime que transform/background/color/box-shadow (GPU-friendly) */
+  transition: transform 160ms var(--ease-out),
+    background-color 200ms var(--ease-out), color 200ms var(--ease-out),
+    border-color 200ms var(--ease-out), box-shadow 200ms var(--ease-out);
+}
+
+/* Jour livrable : cliquable, teinté */
+.dayAvailable {
+  color: var(--color-brun);
+  background-color: var(--color-blanc);
+  border-color: var(--color-border);
+  cursor: pointer;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .dayAvailable:hover {
+    border-color: var(--color-or);
+    background-color: color-mix(in srgb, var(--color-or) 14%, var(--color-blanc));
+    transform: translateY(-1px);
+  }
+}
+
+.dayAvailable:active {
+  transform: scale(0.94);
+}
+
+.dayAvailable:focus-visible {
+  outline: none;
+  border-color: var(--color-or);
+  box-shadow: 0 0 0 3px rgba(201, 162, 75, 0.55);
+}
+
+/* Petit point sous le jour d'aujourd'hui (si non sélectionné) */
+.dayToday:not(.daySelected)::after {
+  content: '';
+  position: absolute;
+  bottom: 6px;
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background-color: var(--color-or-deep);
+}
+
+.day {
+  position: relative;
+}
+
+/* Jour sélectionné : pastille brun pleine, chiffre clair */
+.daySelected,
+.daySelected.dayAvailable {
+  background-color: var(--color-brun);
+  border-color: var(--color-brun);
+  color: var(--color-blanc);
+  font-weight: 700;
+  box-shadow: 0 6px 16px -6px rgba(44, 26, 14, 0.4);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .daySelected.dayAvailable:hover {
+    background-color: var(--color-brun-soft);
+    border-color: var(--color-brun-soft);
+    transform: translateY(-1px);
+  }
+}
+
+.emptyState {
+  font-size: 13px;
+  color: var(--color-texte-soft);
+  text-align: center;
+  padding: var(--space-3) 0;
+}
+
+/* Respect de prefers-reduced-motion : on retire les déplacements, on garde les
+   transitions de couleur (compréhension de l'état sélectionné). */
+@media (prefers-reduced-motion: reduce) {
+  .calendar,
+  .day,
+  .dayAvailable,
+  .navBtn {
+    transition: background-color 200ms ease, color 200ms ease,
+      border-color 200ms ease, box-shadow 200ms ease;
+  }
+  .dayAvailable:hover,
+  .daySelected.dayAvailable:hover,
+  .dayAvailable:active,
+  .navBtn:active:not(:disabled) {
+    transform: none;
+  }
+}
+
+/* ───────── Mobile (≤ 640px) ─────────
+   Le calendrier prend toute la largeur de la card. On resserre légèrement le
+   padding et on agrandit le chiffre des jours pour le confort tactile. */
+@media (max-width: 640px) {
+  .calendar {
+    padding: var(--space-3);
+  }
+
+  .day {
+    font-size: 15px;
+  }
+
+  /* Cible tactile : on garde un minimum confortable même si la largeur force
+     des cases un peu plus petites sur très petit écran. */
+  .day {
+    min-height: 40px;
+  }
+}

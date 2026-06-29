@@ -1,0 +1,51 @@
+# ───────── Whally's — config Apache pour hébergement OVH mutualisé ─────────
+# Placé dans public/ : Vite le copie automatiquement dans dist/ à chaque build.
+# Uploader tout le contenu de dist/ dans le dossier www/ via FTP.
+
+# ───────── SPA React Router : fallback vers index.html ─────────
+# Sans cette règle, accéder/rafraîchir directement /commande renvoie une 404
+# Apache (le fichier n'existe pas sur le disque, c'est une route côté client).
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+  RewriteBase /
+
+  # Ne pas réécrire les fichiers et dossiers qui existent réellement
+  # (assets, images, favicon…) : on les sert directement.
+  RewriteCond %{REQUEST_FILENAME} -f [OR]
+  RewriteCond %{REQUEST_FILENAME} -d
+  RewriteRule ^ - [L]
+
+  # Toutes les autres URL sont renvoyées vers index.html (routing React)
+  RewriteRule ^ index.html [L]
+</IfModule>
+
+# ───────── Compression Gzip (perf) ─────────
+<IfModule mod_deflate.c>
+  AddOutputFilterByType DEFLATE text/html text/css text/javascript application/javascript application/json image/svg+xml
+</IfModule>
+
+# ───────── Cache navigateur ─────────
+# Les assets Vite sont hashés (index-XXXX.js) : on peut les cacher 1 an.
+# Le HTML n'est jamais caché pour toujours servir la dernière version.
+<IfModule mod_expires.c>
+  ExpiresActive On
+
+  # HTML : pas de cache long (on veut la dernière version du routing)
+  ExpiresByType text/html "access plus 0 seconds"
+
+  # Assets hashés : cache long
+  ExpiresByType text/css "access plus 1 year"
+  ExpiresByType application/javascript "access plus 1 year"
+  ExpiresByType image/webp "access plus 1 year"
+  ExpiresByType image/png "access plus 1 year"
+  ExpiresByType image/jpeg "access plus 1 year"
+  ExpiresByType image/svg+xml "access plus 1 year"
+  ExpiresByType font/woff2 "access plus 1 year"
+</IfModule>
+
+# ───────── Sécurité : en-têtes de base ─────────
+<IfModule mod_headers.c>
+  Header set X-Content-Type-Options "nosniff"
+  Header set X-Frame-Options "SAMEORIGIN"
+  Header set Referrer-Policy "strict-origin-when-cross-origin"
+</IfModule>

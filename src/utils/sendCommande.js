@@ -4,13 +4,29 @@ const SERVICE_ID = import.meta.env.VITE_EMAILJS_SERVICE_ID;
 const TEMPLATE_ID = import.meta.env.VITE_EMAILJS_TEMPLATE_ID;
 const PUBLIC_KEY = import.meta.env.VITE_EMAILJS_PUBLIC_KEY;
 
-// Formate la liste des produits commandés en string lisible pour l'email
-// Exemple : "Sauce Barbecue : 3 unités\nHoney Mustard : 2 unités"
+// Formate la liste des produits commandés en string lisible pour l'email.
+// Conditionnement B2B : 1 carton = poidsKg (10 kg).
+// Exemple : "Sauce Cheddar : 3 cartons (30 kg)\nSauce Crousty : 2 cartons (20 kg)"
 function formatCommande(items, produits) {
-  return produits
+  const lignes = produits
     .filter((p) => (items[p.id] ?? 0) > 0)
-    .map((p) => `${p.nom} : ${items[p.id]} unité${items[p.id] > 1 ? 's' : ''}`)
-    .join('\n');
+    .map((p) => {
+      const qty = items[p.id];
+      const kg = qty * (p.poidsKg ?? 0);
+      return `${p.nom} : ${qty} carton${qty > 1 ? 's' : ''} (${kg} kg)`;
+    });
+
+  // Ligne de total en bas (nombre de cartons + poids cumulé)
+  const totalCartons = produits.reduce((sum, p) => sum + (items[p.id] ?? 0), 0);
+  const totalKg = produits.reduce(
+    (sum, p) => sum + (items[p.id] ?? 0) * (p.poidsKg ?? 0),
+    0
+  );
+  lignes.push(
+    `\nTotal : ${totalCartons} carton${totalCartons > 1 ? 's' : ''} (${totalKg} kg)`
+  );
+
+  return lignes.join('\n');
 }
 
 /**

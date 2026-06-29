@@ -3,29 +3,29 @@
 // Règles consolidées (validées client) :
 //
 // Groupe 1 (CH10, CH11, CH12, CH25, CH60, CH62) → Lu/Ma/Me/Je/Ve
-//   • Commande avant 15h  → livraison J+1 (lendemain ouvré)
-//   • Commande après 15h  → livraison J+2 (ouvré)
-//   • Vendredi avant 15h  → livraison lundi
+//   • Commande avant 12h  → livraison J+1 (lendemain ouvré)
+//   • Commande après 12h  → livraison J+2 (ouvré)
+//   • Vendredi avant 12h  → livraison lundi
 //   • Week-end exclu (saute au lundi)
 //
 // Groupe 2 (CH16, CH19, CH23) → Lu/Me/Ve
-//   • Pour livrer un Lu, Me ou Ve, il faut avoir commandé avant la veille 15h.
-//   • Ex : commande avant vendredi 15h → lundi ;
-//          commande avant mardi 15h → mercredi ;
-//          commande avant jeudi 15h → vendredi.
+//   • Pour livrer un Lu, Me ou Ve, il faut avoir commandé avant la veille 12h.
+//   • Ex : commande avant vendredi 12h → lundi ;
+//          commande avant mardi 12h → mercredi ;
+//          commande avant jeudi 12h → vendredi.
 //
 // Groupe 3 (CH14, CH18, CH39) → Ma/Je
-//   • Pour livrer un Ma ou Je, il faut avoir commandé avant la veille 15h.
-//   • Ex : commande avant lundi 15h → mardi ;
-//          commande avant mercredi 15h → jeudi.
+//   • Pour livrer un Ma ou Je, il faut avoir commandé avant la veille 12h.
+//   • Ex : commande avant lundi 12h → mardi ;
+//          commande avant mercredi 12h → jeudi.
 //
 // Principe générique : pour chaque date de livraison candidate, on calcule sa
-// "deadline de commande" (la veille à 15h00). Si maintenant <= deadline, la
+// "deadline de commande" (la veille à 12h00). Si maintenant <= deadline, la
 // date est proposée. Pour le groupe 1, on applique en plus la règle J+1/J+2.
 
 import { getGroupeForDepartement, LIVRAISON_GROUPES } from '../data/departements.js';
 
-const CUTOFF_HOUR = 15;
+const CUTOFF_HOUR = 12;
 const HORIZON_DAYS = 60; // fenêtre de calcul des prochains créneaux
 
 // Renvoie une nouvelle Date à minuit, sans muter l'originale
@@ -42,14 +42,14 @@ function addDays(date, n) {
   return d;
 }
 
-// Renvoie la deadline de commande (veille du jour de livraison à 15h00)
+// Renvoie la deadline de commande (veille du jour de livraison à 12h00)
 function getOrderDeadline(deliveryDate) {
   const deadline = addDays(deliveryDate, -1);
   deadline.setHours(CUTOFF_HOUR, 0, 0, 0);
   return deadline;
 }
 
-// Renvoie true si on est avant 15h aujourd'hui
+// Renvoie true si on est avant 12h aujourd'hui
 function isBeforeCutoffToday(now) {
   return now.getHours() < CUTOFF_HOUR;
 }

@@ -1,0 +1,480 @@
+/* ───────── Hero plein écran immersif : produits en diagonale + texte overlay ───────── */
+.hero {
+  position: relative;
+  width: 100%;
+  min-height: 100vh;
+  min-height: 100dvh;
+  overflow: hidden;
+  background-color: var(--color-brun);
+  isolation: isolate;
+}
+
+/* Fond : dégradé brun profond + halos dorés chauds. */
+.bg {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  background:
+    radial-gradient(
+      75vw 75vw at 80% 28%,
+      rgba(201, 162, 75, 0.26) 0%,
+      transparent 56%
+    ),
+    radial-gradient(
+      55vw 55vw at 18% 100%,
+      rgba(61, 40, 23, 0.55) 0%,
+      transparent 62%
+    ),
+    linear-gradient(155deg, #271509 0%, #3a2415 52%, #241308 100%);
+}
+
+/* ───────── Scène : 3 produits en diagonale ───────── */
+.stage {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+}
+
+.stageItem {
+  position: absolute;
+  opacity: 0;
+  animation:
+    stageIn 800ms var(--ease-out) forwards,
+    floatHero 6s ease-in-out infinite;
+  will-change: transform;
+}
+
+/* Image produit dans le wrapper. */
+.stageImg {
+  display: block;
+  width: 100%;
+  height: auto;
+  object-fit: contain;
+  position: relative;
+  z-index: 2;
+  filter:
+    drop-shadow(0 28px 34px rgba(8, 4, 1, 0.55))
+    drop-shadow(0 10px 14px rgba(8, 4, 1, 0.4));
+}
+
+/* ───────── Vapeur « plat chaud » sur chaque produit ─────────
+   Conteneur calé au sommet du produit ; 3 volutes floues qui montent en
+   ondulant et se dissipent, désynchronisées. */
+.steam {
+  position: absolute;
+  z-index: 1;
+  left: 50%;
+  bottom: 42%;
+  transform: translateX(-50%);
+  width: 50%;
+  height: 60%;
+  pointer-events: none;
+}
+
+.steamPuff {
+  position: absolute;
+  bottom: 0;
+  width: 55%;
+  aspect-ratio: 1 / 1;
+  border-radius: 50%;
+  background: radial-gradient(
+    circle,
+    rgba(255, 252, 245, 0.5) 0%,
+    rgba(255, 250, 240, 0.24) 42%,
+    transparent 70%
+  );
+  filter: blur(9px);
+  opacity: 0;
+  animation: steamRise 6.5s ease-in-out infinite;
+}
+
+.steamPuff:nth-child(1) { left: 6%;  animation-delay: 0s; }
+.steamPuff:nth-child(2) { left: 36%; animation-delay: -2.4s; animation-duration: 7.4s; }
+.steamPuff:nth-child(3) { left: 20%; animation-delay: -4.3s; animation-duration: 5.8s; }
+
+@keyframes steamRise {
+  0%   { opacity: 0; transform: translate(0, 0) scale(0.5); }
+  22%  { opacity: 0.75; }
+  50%  { transform: translate(-12px, -120%) scale(1.05); }
+  80%  { opacity: 0.3; }
+  100% { opacity: 0; transform: translate(8px, -240%) scale(1.5); }
+}
+
+/* Diagonale : grand en bas-droite → moyen → petit vers le haut-droite.
+   Tailles décroissantes + opacité légèrement réduite pour la profondeur. */
+.stageItem1 {
+  /* Fromagère : le plus grand, avant-plan, bas-droite */
+  width: clamp(280px, 38vw, 620px);
+  right: -3%;
+  bottom: -6%;
+  z-index: 3;
+  animation-delay: 300ms, 300ms;
+}
+.stageItem2 {
+  /* Cheddar : moyen, milieu */
+  width: clamp(220px, 28vw, 460px);
+  right: 22%;
+  bottom: 16%;
+  z-index: 2;
+  animation-delay: 460ms, 460ms;
+}
+.stageItem3 {
+  /* Tacos Fromagère : à droite, descendu pour venir DERRIÈRE le haut des deux
+     bowls (il émerge entre/derrière eux). z-index 1 = en retrait. */
+  width: clamp(230px, 28vw, 460px);
+  right: 6%;
+  top: 22%;
+  z-index: 1;
+  opacity: 0;
+  animation-delay: 620ms, 620ms;
+}
+
+@keyframes stageIn {
+  from { opacity: 0; transform: translateY(28px) scale(0.92); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+/* Lévitation désynchronisée (3 variantes pour ne jamais bouger à l'unisson). */
+@keyframes floatHero {
+  0%, 100% { transform: translateY(0); }
+  50%      { transform: translateY(-16px); }
+}
+.stageItem2 { animation-name: stageIn, floatHero2; }
+.stageItem3 { animation-name: stageIn, floatHero3; }
+@keyframes floatHero2 {
+  0%, 100% { transform: translateY(0) rotate(2deg); }
+  50%      { transform: translateY(-22px) rotate(2deg); }
+}
+@keyframes floatHero3 {
+  0%, 100% { transform: translateY(0) rotate(-3deg); }
+  50%      { transform: translateY(-13px) rotate(-3deg); }
+}
+
+/* ───────── Voile : assombrit la gauche/bas (côté texte) ───────── */
+.scrim {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+  background:
+    linear-gradient(
+      105deg,
+      rgba(18, 10, 5, 0.92) 0%,
+      rgba(18, 10, 5, 0.75) 32%,
+      rgba(18, 10, 5, 0.3) 58%,
+      transparent 78%
+    ),
+    linear-gradient(
+      to top,
+      rgba(18, 10, 5, 0.6) 0%,
+      transparent 40%
+    );
+}
+
+/* ───────── Contenu (overlay, ancré bas-gauche) ───────── */
+.content {
+  position: relative;
+  z-index: 3;
+  min-height: 100vh;
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  max-width: var(--container-max, 1280px);
+  margin-inline: auto;
+  padding-inline: clamp(var(--container-padding, 24px), 5vw, 64px);
+  padding-top: clamp(104px, 12vh, 140px);
+  padding-bottom: clamp(48px, 8vh, 88px);
+}
+
+/* Animation d'entrée staggerée. */
+.eyebrow,
+.headline,
+.sauces,
+.subline,
+.actions {
+  opacity: 0;
+  transform: translateY(18px);
+  animation: heroRise 750ms var(--ease-out) forwards;
+}
+.eyebrow  { animation-delay: 120ms; }
+.headline { animation-delay: 240ms; }
+.sauces   { animation-delay: 400ms; }
+.subline  { animation-delay: 540ms; }
+.actions  { animation-delay: 660ms; }
+
+@keyframes heroRise {
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.eyebrow {
+  font-family: var(--font-sans);
+  font-size: clamp(11px, 1vw, 14px);
+  font-weight: 600;
+  letter-spacing: 0.26em;
+  text-transform: uppercase;
+  color: var(--color-or);
+  margin-bottom: clamp(16px, 2vw, 24px);
+}
+
+.headline {
+  font-family: var(--font-serif);
+  font-weight: 700;
+  font-size: clamp(40px, 6.4vw, 92px);
+  letter-spacing: -0.035em;
+  line-height: 0.98;
+  color: #fff;
+  text-shadow: 0 8px 40px rgba(0, 0, 0, 0.5);
+  margin-bottom: clamp(22px, 3vw, 36px);
+  max-width: 18ch;
+}
+
+.headline em {
+  font-style: italic;
+  font-weight: 400;
+  color: var(--color-or);
+}
+
+/* ───────── Les 3 noms de sauces ───────── */
+.sauces {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: clamp(12px, 2vw, 26px);
+  margin-bottom: clamp(24px, 3vw, 36px);
+}
+
+.sauceItem {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.sauceItem:not(:first-child)::before {
+  content: '';
+  position: absolute;
+  left: calc(-1 * clamp(6px, 1vw, 13px));
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background-color: rgba(255, 255, 255, 0.35);
+}
+
+.sauceLink {
+  font-family: var(--font-serif);
+  font-weight: 600;
+  font-size: clamp(20px, 2.6vw, 34px);
+  letter-spacing: -0.02em;
+  line-height: 1;
+  color: #fff;
+  padding-bottom: 4px;
+  background-image: linear-gradient(var(--accent), var(--accent));
+  background-repeat: no-repeat;
+  background-position: 0 100%;
+  background-size: 0% 3px;
+  transition: background-size 320ms var(--ease-out), color 200ms var(--ease-out);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .sauceLink:hover {
+    color: var(--accent);
+    background-size: 100% 3px;
+  }
+}
+.sauceLink:focus-visible {
+  outline: none;
+  background-size: 100% 3px;
+  border-radius: 2px;
+}
+
+.subline {
+  font-size: clamp(15px, 1.6vw, 18px);
+  line-height: 1.6;
+  color: rgba(255, 255, 255, 0.82);
+  max-width: 440px;
+  margin-bottom: clamp(28px, 4vw, 42px);
+  text-shadow: 0 2px 14px rgba(0, 0, 0, 0.5);
+}
+
+/* ───────── CTA ───────── */
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: clamp(12px, 1.6vw, 18px);
+}
+
+.cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 16px 30px;
+  background-color: var(--color-or);
+  color: var(--color-brun);
+  border-radius: var(--radius-pill);
+  font-family: var(--font-sans);
+  font-size: clamp(15px, 1.5vw, 17px);
+  font-weight: 700;
+  box-shadow: 0 16px 40px -16px rgba(201, 162, 75, 0.6);
+  transition: transform 160ms var(--ease-out), background-color 220ms var(--ease-out),
+    box-shadow 300ms var(--ease-out);
+}
+
+.ctaWa { width: 22px; height: 22px; flex-shrink: 0; }
+
+@media (hover: hover) and (pointer: fine) {
+  .cta:hover {
+    background-color: #e0bd6a;
+    box-shadow: 0 20px 48px -16px rgba(201, 162, 75, 0.7);
+  }
+}
+.cta:active { transform: scale(0.97); }
+
+.ctaSecondary {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 15px 26px;
+  border-radius: var(--radius-pill);
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  background-color: rgba(255, 255, 255, 0.06);
+  color: #fff;
+  font-family: var(--font-sans);
+  font-size: clamp(14px, 1.4vw, 16px);
+  font-weight: 600;
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  transition: transform 160ms var(--ease-out), background-color 220ms var(--ease-out),
+    border-color 220ms var(--ease-out);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .ctaSecondary:hover {
+    background-color: rgba(255, 255, 255, 0.14);
+    border-color: rgba(255, 255, 255, 0.7);
+  }
+  .ctaSecondary:hover .ctaArrow { transform: translateX(4px); }
+}
+.ctaSecondary:active { transform: scale(0.97); }
+
+.ctaArrow {
+  width: 18px;
+  height: 18px;
+  transition: transform 240ms var(--ease-out);
+}
+
+/* ───────── Mobile (≤ 768px) ─────────
+   Produits en composition diagonale compacte dans la moitié HAUTE, texte ancré
+   en BAS. Voile fort en bas pour la lisibilité. Halo doré recentré en haut. */
+@media (max-width: 768px) {
+  /* Texte ancré en bas, aligné à gauche. */
+  .content {
+    justify-content: flex-end;
+    align-items: flex-start;
+    padding-top: clamp(90px, 12vh, 120px);
+    padding-bottom: clamp(36px, 7vh, 64px);
+  }
+
+  .headline {
+    font-size: clamp(34px, 9.5vw, 52px);
+    max-width: 13ch;
+    margin-bottom: clamp(16px, 3vw, 24px);
+  }
+
+  .eyebrow {
+    margin-bottom: clamp(10px, 2vw, 16px);
+  }
+
+  .subline {
+    max-width: 100%;
+    margin-bottom: clamp(22px, 4vw, 32px);
+  }
+
+  /* Halo doré recentré sur la zone produits (haut-droite). */
+  .bg {
+    background:
+      radial-gradient(
+        70vw 50vh at 72% 22%,
+        rgba(201, 162, 75, 0.28) 0%,
+        transparent 60%
+      ),
+      radial-gradient(
+        60vw 40vh at 20% 100%,
+        rgba(61, 40, 23, 0.5) 0%,
+        transparent 65%
+      ),
+      linear-gradient(160deg, #271509 0%, #3a2415 50%, #1f1006 100%);
+  }
+
+  /* Le stage démarre SOUS la navbar fixe (~96px de marge pour absorber la
+     vapeur qui dépasse au-dessus des produits) → aucun produit derrière la
+     navbar. Les top:% des produits sont calculés dans cette zone décalée. */
+  .stage {
+    top: 96px;
+  }
+
+  /* Produits : diagonale compacte dans la moitié haute, bien cadrés.
+     stageItem1 (bowl Fromagère) dominant à droite, stageItem2 (bowl Cheddar) à
+     gauche plus bas, stageItem3 (tacos) en retrait derrière le sommet. */
+  .stageItem1 {
+    width: clamp(230px, 62vw, 340px);
+    right: -6%;
+    bottom: auto;
+    top: 20%;
+  }
+  .stageItem2 {
+    width: clamp(160px, 44vw, 240px);
+    right: 42%;
+    bottom: auto;
+    top: 12%;
+  }
+  .stageItem3 {
+    width: clamp(160px, 44vw, 240px);
+    right: 4%;
+    top: 7%;
+  }
+
+  /* Voile : sombre en bas (texte), laisse respirer les produits en haut. */
+  .scrim {
+    background:
+      linear-gradient(
+        to top,
+        rgba(18, 10, 5, 0.96) 0%,
+        rgba(18, 10, 5, 0.86) 30%,
+        rgba(18, 10, 5, 0.45) 52%,
+        rgba(18, 10, 5, 0.1) 72%,
+        transparent 86%
+      );
+  }
+}
+
+/* Très petits écrans : produits remontés et réduits pour ne jamais toucher le
+   titre (sur écran court, le contenu se tasse). */
+@media (max-width: 400px) {
+  .stageItem1 { width: 54vw; top: 13%; right: -4%; }
+  .stageItem2 { width: 38vw; top: 7%; right: 44%; }
+  .stageItem3 { width: 38vw; top: 4%; right: 3%; }
+}
+
+/* ───────── Mouvement réduit ───────── */
+@media (prefers-reduced-motion: reduce) {
+  .eyebrow, .headline, .sauces, .subline, .actions {
+    animation: heroFade 300ms ease forwards;
+    transform: none;
+  }
+  @keyframes heroFade { to { opacity: 1; } }
+
+  .stageItem {
+    animation: heroFade 400ms ease forwards;
+    opacity: 1;
+  }
+  .stageItem2 { transform: rotate(2deg); }
+  .stageItem3 { transform: rotate(-3deg); }
+
+  /* Vapeur masquée si mouvement réduit (effet non essentiel). */
+  .steam { display: none; }
+
+  .ctaSecondary:hover .ctaArrow { transform: none; }
+}

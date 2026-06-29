@@ -12,7 +12,9 @@ export const PRODUITS = [
     // Sous-titre (texte en jaune / italique sous le titre).
     accroche:
       "La sauce fromagère Whally's spécialement conçue pour les tacos.",
-    format: 'Bouteille 1L',
+    // Conditionnement de commande B2B : carton de 10 kg (1 carton = 10 kg).
+    format: 'Carton de 10 kg',
+    poidsKg: 10,
     // Description principale.
     description:
       "Originaire des montagnes du Jura, elle incarne la tradition du fromage de qualité. Elle peut accompagner les bowl's en apportant une onctuosité inégalée, une saveur gourmande aux frites, et bien d'autres délices.",
@@ -21,12 +23,21 @@ export const PRODUITS = [
     couleur: '#e0a93a',
     // Photo produit fournie par le client (optimisée).
     image: '/produits/fromagere-produit.webp',
-    // Cadre image carré (photo quasi carrée, cohérent avec le Cheddar).
-    mediaCarre: true,
+    // Rendu « fusion » : produits détourés posés directement sur le fond de
+    // section (sans cadre), avec ombre au sol en CSS. Plusieurs produits =
+    // composition duo (le bowl devant, le tacos qui chevauche derrière).
+    fusion: true,
+    // Vapeur CSS « plat chaud » qui s'élève des produits (bowl + tacos).
+    steam: true,
+    produitsDetoures: [
+      { src: '/produits/fromagere-bowl.webp', alt: 'Bowl Whally\'s sauce fromagère' },
+      { src: '/produits/fromagere-tacos.webp', alt: 'Tacos Whally\'s sauce fromagère' },
+    ],
     // Textes + logo agrandis (cohérent avec le Cheddar).
     texteLarge: true,
     // Image de fond pleine largeur derrière la ligne produit (avec voile).
-    fond: '/produits/fond-fromagere.webp',
+    // Fonds échangés Fromagère/Cheddar (demande client).
+    fond: '/produits/fond-cheddar.webp',
   },
   {
     id: 'cheddar',
@@ -36,7 +47,9 @@ export const PRODUITS = [
     // Sous-titre (texte en jaune / italique sous le titre).
     accroche:
       "La sauce cheddar Whally's apporte une touche gourmande, fondante et généreuse à vos kebabs, galettes, frites, box et snacks chauds.",
-    format: 'Bouteille 1L',
+    // Conditionnement de commande B2B : carton de 10 kg (1 carton = 10 kg).
+    format: 'Carton de 10 kg',
+    poidsKg: 10,
     // Description principale.
     description:
       "Grâce à sa texture onctueuse et son goût intense de cheddar, elle sublime vos recettes en quelques secondes et offre à vos clients une expérience encore plus savoureuse.",
@@ -45,10 +58,18 @@ export const PRODUITS = [
     couleur: '#d9701f',
     // Photo produit fournie par le client (optimisée).
     image: '/produits/cheddar-produit.webp',
-    // Cadre image carré (photo carrée, comme la section Crousty).
-    mediaCarre: true,
+    // Rendu « fusion » : 4 produits détourés groupés côté image (texte à gauche),
+    // fondus sur le fond de section, chacun avec son ombre au sol.
+    fusion: true,
+    produitsDetoures: [
+      { src: '/produits/cheddar-1.webp', alt: 'Sandwich Whally\'s sauce cheddar' },
+      { src: '/produits/cheddar-2.webp', alt: 'Bowl Whally\'s sauce cheddar' },
+      { src: '/produits/cheddar-3.webp', alt: 'Frites cheddar Whally\'s' },
+      { src: '/produits/cheddar-4.webp', alt: 'Burrito Whally\'s sauce cheddar' },
+    ],
     // Image de fond pleine largeur derrière la ligne produit (avec voile).
-    fond: '/produits/fond-cheddar.webp',
+    // Fonds échangés Fromagère/Cheddar (demande client).
+    fond: '/produits/fond-fromagere.webp',
   },
   {
     id: 'crousty',
@@ -57,7 +78,9 @@ export const PRODUITS = [
     layout: 'gta',
     // Sous-titre (italique rose dans la bannière GTA).
     accroche: "La sauce Crousty Whally's, c'est la tendance du moment pour vos crousty.",
-    format: 'Bouteille 1L',
+    // Conditionnement de commande B2B : carton de 10 kg (1 carton = 10 kg).
+    format: 'Carton de 10 kg',
+    poidsKg: 10,
     description:
       "Avec son goût unique et sa texture onctueuse, elle sublime vos recettes et transforme une simple préparation en véritable expérience street-food. La sauce Crousty Whally's donne du caractère, du relief et une touche irrésistible qui fera de vos crousty un vrai délice.",
     descriptionLongue: null,

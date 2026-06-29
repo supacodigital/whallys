@@ -1,6 +1,7 @@
 import { useState, useMemo, useEffect, useRef } from 'react';
 import { Check, AlertCircle, Loader2, Truck, Sparkles, Mail, Store, MapPin, CalendarDays } from 'lucide-react';
 import QuantitySelector from '../../components/QuantitySelector/QuantitySelector.jsx';
+import DeliveryCalendar from '../../components/DeliveryCalendar/DeliveryCalendar.jsx';
 import Navbar from '../../components/Navbar/Navbar.jsx';
 import Footer from '../../components/Footer/Footer.jsx';
 import { PRODUITS } from '../../data/produits.js';
@@ -71,6 +72,16 @@ function Commande() {
     [items]
   );
 
+  // Poids total en kg : chaque carton = poidsKg (10 kg). On somme quantité × poids.
+  const totalKg = useMemo(
+    () =>
+      PRODUITS.reduce(
+        (sum, p) => sum + (items[p.id] || 0) * (p.poidsKg || 0),
+        0
+      ),
+    [items]
+  );
+
   const handleQuantityChange = (id, value) => {
     setItems((prev) => ({ ...prev, [id]: value }));
   };
@@ -117,6 +128,7 @@ function Commande() {
           quantite: items[p.id],
         })),
         total: totalItems,
+        totalKg,
       });
       setStatus({ type: 'success' });
       setNomRestaurant('');
@@ -227,7 +239,8 @@ function Commande() {
                 <div className={styles.recapTotal}>
                   <span>Total</span>
                   <strong>
-                    {lastOrder.total} unité{lastOrder.total > 1 ? 's' : ''}
+                    {lastOrder.total} carton{lastOrder.total > 1 ? 's' : ''} ·{' '}
+                    {lastOrder.totalKg} kg
                   </strong>
                 </div>
               </div>
@@ -283,8 +296,9 @@ function Commande() {
                 </div>
                 {totalItems > 0 && (
                   <p className={styles.total}>
-                    Total : <strong>{totalItems}</strong> unité
-                    {totalItems > 1 ? 's' : ''}
+                    Total : <strong>{totalItems}</strong> carton
+                    {totalItems > 1 ? 's' : ''}{' '}
+                    <span className={styles.totalKg}>· {totalKg} kg</span>
                   </p>
                 )}
               </fieldset>
@@ -357,22 +371,17 @@ function Commande() {
                   </p>
                 ) : (
                   <>
-                    <select
-                      id="dateLivraison"
+                    <DeliveryCalendar
+                      availableDates={availableDates}
                       value={dateLivraison}
-                      onChange={(e) => setDateLivraison(e.target.value)}
-                      className={styles.select}
-                      required
-                    >
-                      {availableDates.map((d) => {
-                        const iso = formatDateISO(d);
-                        return (
-                          <option key={iso} value={iso}>
-                            {formatDateHuman(d)}
-                          </option>
-                        );
-                      })}
-                    </select>
+                      onChange={setDateLivraison}
+                    />
+                    {dateLivraison && (
+                      <p className={styles.selectedDate}>
+                        Livraison le{' '}
+                        <strong>{formatDateHuman(new Date(dateLivraison))}</strong>.
+                      </p>
+                    )}
                     {departementJustChanged ? (
                       <p
                         className={styles.deptChangedHint}
@@ -383,8 +392,8 @@ function Commande() {
                       </p>
                     ) : (
                       <p className={styles.hint}>
-                        Les créneaux affichés tiennent compte du planning de votre département
-                        et de la limite de 15h.
+                        Seules les dates livrables pour votre département sont
+                        sélectionnables (commande avant 12h).
                       </p>
                     )}
                   </>
@@ -439,7 +448,7 @@ function Commande() {
               <div>
                 <h3 className={styles.trustTitle}>Livraison rapide</h3>
                 <p className={styles.trustText}>
-                  Commande avant 15h, livraison selon votre département.
+                  Commande avant 12h, livraison selon votre département.
                 </p>
               </div>
             </li>
