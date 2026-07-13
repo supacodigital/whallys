@@ -166,7 +166,7 @@ function Commande() {
               Passez votre <em>commande</em>
             </h1>
             <p className={styles.subline}>
-              Livraison rapide en Suisse romande, selon votre département.
+              Livraison rapide dans toute la Suisse, selon votre département.
             </p>
           </header>
 
@@ -437,7 +437,7 @@ function Commande() {
               <div>
                 <h3 className={styles.trustTitle}>Sauces artisanales</h3>
                 <p className={styles.trustText}>
-                  Recettes maison, mijotées en petites séries.
+                  Recettes maison.
                 </p>
               </div>
             </li>
@@ -446,7 +446,7 @@ function Commande() {
                 <Truck size={20} />
               </span>
               <div>
-                <h3 className={styles.trustTitle}>Livraison rapide</h3>
+                <h3 className={styles.trustTitle}>Livraison 24h/48h</h3>
                 <p className={styles.trustText}>
                   Commande avant 12h, livraison selon votre département.
                 </p>

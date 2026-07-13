@@ -122,6 +122,10 @@
   -webkit-text-stroke: 2px #1a0a2e;
   text-shadow: 3px 3px 0 #1a0a2e;
   margin-left: 6%;
+  /* petit espace pour que « Sauce » ne soit pas mangé par « CROUSTY » dessous */
+  margin-bottom: clamp(2px, 0.4vw, 6px);
+  position: relative;
+  z-index: 1;
 }
 
 .letteringMain {
@@ -139,28 +143,83 @@
     0 0 24px rgba(255, 73, 176, 0.7);
 }
 
+/* Conteneur du mot « CROUSTY » : sert de repère pour poser le logo en absolu. */
+.letteringMainWrap {
+  position: relative;
+  display: inline-block;
+}
+
+/* Logo Whally's superposé sur la fin (« TY ») du mot CROUSTY, façon sticker
+   (harmonie avec la Fromagère, mais compact). Ancré en bas à droite du mot. */
+.letteringLogo {
+  position: absolute;
+  right: clamp(-28px, -2.5vw, -46px);
+  bottom: clamp(-34px, -3.4vw, -58px);
+  width: clamp(88px, 10vw, 150px);
+  height: auto;
+  /* contre-incline le logo pour le redresser (le lettering porte skewX(-7deg)) */
+  transform: skewX(7deg);
+  /* détache le logo du lettering sombre : ombre + léger halo */
+  filter:
+    drop-shadow(0 3px 8px rgba(20, 6, 30, 0.55))
+    drop-shadow(0 0 2px rgba(255, 255, 255, 0.4));
+}
+
 /* ───────── Bowl produit ───────── */
 .product {
   position: relative;
   margin-top: clamp(-8px, -1vw, -16px);
-  width: min(100%, 420px);
+  width: min(100%, 440px);
   aspect-ratio: 1 / 1;
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
+/* Ombre au sol elliptique : ancre le bowl détouré (qui n'a pas d'ombre propre)
+   dans la scène, au lieu de le laisser flotter. Posée sous le bowl. */
+.product::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  bottom: 6%;
+  width: 66%;
+  height: 8%;
+  transform: translateX(-50%);
+  background: radial-gradient(
+    ellipse at center,
+    rgba(20, 6, 30, 0.55) 0%,
+    rgba(20, 6, 30, 0.25) 45%,
+    rgba(20, 6, 30, 0) 72%
+  );
+  filter: blur(3px);
+  z-index: -1;
+  /* l'ombre suit le bowl au survol (léger recul) */
+  transition: transform 500ms var(--ease-out), opacity 500ms var(--ease-out);
+}
+
 .bowl {
   width: 100%;
   height: 100%;
   object-fit: contain;
-  filter: drop-shadow(0 24px 30px rgba(0, 0, 0, 0.5));
+  /* ombre portée douce sous le bowl (renforce l'ancrage du produit détouré) */
+  filter:
+    drop-shadow(0 26px 24px rgba(0, 0, 0, 0.45))
+    drop-shadow(0 10px 12px rgba(0, 0, 0, 0.3));
   transition: transform 500ms var(--ease-out);
+  transform-origin: center bottom;
+  cursor: pointer;
 }
 
+/* Hover : zoom léger du bowl (cohérent avec la section Fromagère). L'ombre au
+   sol s'élargit un peu pour accompagner le grossissement. */
 @media (hover: hover) and (pointer: fine) {
-  .banner:hover .bowl {
-    transform: translateY(-6px) scale(1.02);
+  .product:hover .bowl {
+    transform: scale(1.05);
+  }
+  .product:hover::after {
+    transform: translateX(-50%) scale(1.08);
+    opacity: 0.85;
   }
 }
 
@@ -265,7 +324,7 @@
     opacity: 0;
   }
   .bowl,
-  .banner:hover .bowl {
+  .product:hover .bowl {
     transition: none;
     transform: none;
   }

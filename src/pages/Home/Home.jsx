@@ -2,6 +2,7 @@ import Navbar from "../../components/Navbar/Navbar.jsx";
 import Footer from "../../components/Footer/Footer.jsx";
 import ProductCard from "../../components/ProductCard/ProductCard.jsx";
 import CroustyBanner from "../../components/CroustyBanner/CroustyBanner.jsx";
+import PosterFromagere from "../../components/PosterFromagere/PosterFromagere.jsx";
 import Hero from "../../components/Hero/Hero.jsx";
 import Marquee from "../../components/Marquee/Marquee.jsx";
 import UsageSteps from "../../components/UsageSteps/UsageSteps.jsx";
@@ -37,12 +38,14 @@ function Home() {
             <div className={styles.productsStack}>
               {PRODUITS.map((p, index) => (
                 <div key={p.id} className={styles.stackItem}>
-                  {p.layout === "gta" ? (
+                  {p.layout === "poster" ? (
+                    <PosterFromagere produit={p} />
+                  ) : p.layout === "gta" ? (
                     <CroustyBanner produit={p} />
                   ) : (
                     <ProductCard
                       produit={p}
-                      reversed={index % 2 === 1}
+                      reversed={p.reversed ?? index % 2 === 1}
                       dark={index === 1}
                     />
                   )}

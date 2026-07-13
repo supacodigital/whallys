@@ -187,68 +187,25 @@
   filter:
     drop-shadow(0 18px 22px rgba(20, 10, 4, 0.38))
     drop-shadow(0 6px 8px rgba(20, 10, 4, 0.28));
-  transition: transform 600ms var(--ease-out);
-  will-change: transform;
 }
 
 /* Produit 1 (bowl) : dominant, devant, légèrement décalé et penché à gauche.
-   Animation float continue : lévitation + léger balancement, désynchronisée
-   du tacos (durée/amplitude différentes) pour un rendu vivant, pas mécanique.
-   Le rotate de base (-10deg) est intégré dans les keyframes. */
+   Produits fixes (demande client : pas d'animation) — rotation statique. */
 .fusionItem1 {
   width: 78%;
   left: 0;
   bottom: 4%;
   z-index: 2;
   transform: rotate(-10deg);
-  animation: float-bowl 5s ease-in-out infinite;
 }
 
-/* Produit 2 (tacos) : accent, derrière le bowl, en haut à droite, plus petit.
-   Float plus ample et plus rapide (esprit « ingrédient qui flotte »). */
+/* Produit 2 (tacos) : accent, derrière le bowl, en haut à droite, plus petit. */
 .fusionItem2 {
   width: 58%;
   right: 0;
   top: 0;
   z-index: 1;
   transform: rotate(-4deg);
-  animation: float-tacos 4.2s ease-in-out infinite;
-  /* léger décalage pour désynchroniser du bowl */
-  animation-delay: -1.5s;
-}
-
-/* Lévitation du bowl : monte de 14px en tanguant légèrement (-10° → -13°). */
-@keyframes float-bowl {
-  0%, 100% {
-    transform: rotate(-10deg) translateY(0);
-  }
-  50% {
-    transform: rotate(-13deg) translateY(-14px);
-  }
-}
-
-/* Lévitation du tacos : plus ample (20px) + balancement inverse (-4° → 0°),
-   pour qu'ils ne bougent jamais à l'unisson. */
-@keyframes float-tacos {
-  0%, 100% {
-    transform: rotate(-4deg) translateY(0);
-  }
-  50% {
-    transform: rotate(0deg) translateY(-20px);
-  }
-}
-
-/* Accessibilité : on coupe le mouvement si l'utilisateur le demande, en
-   conservant la rotation statique de base. */
-@media (prefers-reduced-motion: reduce) {
-  .fusionItem1 {
-    animation: none;
-    transform: rotate(-10deg);
-  }
-  .fusionItem2 {
-    animation: none;
-    transform: rotate(-4deg);
-  }
 }
 
 /* ───────── Vapeur CSS « plat chaud » (Fromagère) ─────────
@@ -330,22 +287,6 @@
   }
 }
 
-@media (prefers-reduced-motion: reduce) {
-  .fusionItem,
-  .rowFusion:hover .fusionItem1,
-  .rowFusion:hover .fusionItem2 {
-    transition: none;
-  }
-  .fusionItem1,
-  .rowFusion:hover .fusionItem1 {
-    transform: rotate(-10deg);
-  }
-  .fusionItem2,
-  .rowFusion:hover .fusionItem2 {
-    transform: rotate(-4deg);
-  }
-}
-
 /* ───────── Variante fusion à 4 produits (Cheddar) ─────────
    Grille 2×2 : chaque produit dans sa cellule (les 4 bien visibles, aucune
    superposition), légère rotation par cellule pour garder l'énergie « collage ».
@@ -368,51 +309,91 @@
   z-index: auto;
 }
 
-/* Cheddar : les PRODUITS restent fixes (rotation de base légère pour le style).
-   L'animation se fait AUTOUR d'eux, via une couche de rayons rotatifs placée
-   derrière le groupe (voir .fusionRays plus bas). On redéfinit la rotation de
-   base pour neutraliser l'animation float héritée du duo Fromagère (item1/2). */
-.fusionStage4 .fusionItem1 { grid-column: 2; grid-row: 2; transform: rotate(-4deg); animation: none; }
-.fusionStage4 .fusionItem2 { grid-column: 1; grid-row: 1; transform: rotate(3deg);  animation: none; }
-.fusionStage4 .fusionItem3 { grid-column: 2; grid-row: 1; transform: rotate(4deg);  animation: none; }
-.fusionStage4 .fusionItem4 { grid-column: 1; grid-row: 2; transform: rotate(-6deg); animation: none; }
+/* Cheddar : placement des 4 cellules produit dans la grille 2×2.
+   kebab ↖   frites ↗
+   galette ↙  box ↘
+   Produits fixes, cellules droites (pas de rotation : le label reste lisible). */
+.fusionStage4 .fusionItem1 { grid-column: 1; grid-row: 1; animation: none; } /* kebab */
+.fusionStage4 .fusionItem2 { grid-column: 2; grid-row: 1; animation: none; } /* frites */
+.fusionStage4 .fusionItem3 { grid-column: 1; grid-row: 2; animation: none; } /* galette */
+.fusionStage4 .fusionItem4 { grid-column: 2; grid-row: 2; animation: none; } /* box */
 
-/* ───────── Rayons rotatifs derrière les 4 produits (Cheddar) ─────────
-   Couche décorative : un éventail de rayons (style burst promo/street-food) qui
-   tourne lentement en arrière-plan, centré sur le groupe. Les produits, posés
-   au-dessus (z-index plus élevé), restent fixes. */
-.fusionRays {
+/* ───────── Cellules produit annotées (Cheddar) ─────────
+   Chaque produit dans sa cellule de la grille 2×2, avec son nom (label) posé
+   sous lui. Produits fixes (pas d'animation, demande client). */
+.fusionCell {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
+  width: 100%;
+  height: 100%;
+  gap: clamp(2px, 0.6vw, 8px);
+}
+
+.fusionCellImg {
+  display: block;
+  width: 100%;
+  max-height: 78%;
+  object-fit: contain;
+  filter:
+    drop-shadow(0 16px 20px rgba(20, 10, 4, 0.4))
+    drop-shadow(0 6px 8px rgba(20, 10, 4, 0.28));
+  transition: transform 300ms var(--ease-out);
+  transform-origin: center bottom;
+  cursor: pointer;
+}
+
+/* Nom du produit sous chaque image, façon étiquette « pointée ». */
+.fusionLabel {
+  position: relative;
+  font-family: var(--font-display);
+  font-style: italic;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+  font-size: clamp(15px, 1.6vw, 24px);
+  line-height: 1;
+  color: var(--color-blanc);
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
+  /* petite flèche « ↑ » qui pointe vers le produit au-dessus du label */
+  padding-top: 14px;
+}
+
+.fusionLabel::before {
+  content: '';
   position: absolute;
-  z-index: 0;
-  top: 50%;
+  top: 0;
   left: 50%;
-  /* plus large que le stage pour que les rayons dépassent derrière les produits */
-  width: 135%;
-  aspect-ratio: 1 / 1;
-  pointer-events: none;
-  /* Rayons en dégradé conique : alternance transparent / orange cheddar voilé. */
-  background: repeating-conic-gradient(
-    from 0deg,
-    rgba(217, 112, 31, 0.16) 0deg 7deg,
-    transparent 7deg 20deg
-  );
-  /* Masque radial : opaque au centre, fondu vers les bords (pas de cercle net). */
-  -webkit-mask-image: radial-gradient(circle, #000 12%, rgba(0,0,0,0.5) 45%, transparent 70%);
-  mask-image: radial-gradient(circle, #000 12%, rgba(0,0,0,0.5) 45%, transparent 70%);
-  transform: translate(-50%, -50%) rotate(0deg);
-  animation: rays-spin 40s linear infinite;
+  width: 2px;
+  height: 9px;
+  transform: translateX(-50%);
+  background: var(--color-or);
 }
 
-@keyframes rays-spin {
-  from { transform: translate(-50%, -50%) rotate(0deg); }
-  to   { transform: translate(-50%, -50%) rotate(360deg); }
+.fusionLabel::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 50%;
+  width: 8px;
+  height: 8px;
+  transform: translate(-50%, -1px) rotate(45deg);
+  border-top: 2px solid var(--color-or);
+  border-left: 2px solid var(--color-or);
 }
 
-/* Les produits passent au-dessus des rayons. */
-.fusionStage4 .fusionItem { z-index: 1; }
+/* Hover : zoom léger de l'image (cohérent avec les autres sections). */
+@media (hover: hover) and (pointer: fine) {
+  .fusionCell:hover .fusionCellImg {
+    transform: scale(1.06);
+  }
+}
 
 @media (prefers-reduced-motion: reduce) {
-  .fusionRays { animation: none; }
+  .fusionCellImg {
+    transition: none;
+  }
 }
 
 /* ───────── Colonne média (vidéo produit, cadrage éditorial) ─────────
@@ -547,27 +528,26 @@
 
 /* ───────── Variante texte agrandi (mêmes tailles que la ligne Cheddar) ───────── */
 .rowLarge .nom {
-  font-size: clamp(40px, 5.6vw, 68px);
+  font-size: clamp(40px, 5.2vw, 60px);
 }
 
 .rowLarge .titleLogo {
-  /* Logo réduit : à 64px il poussait le titre « Sauce Fromagère » (nowrap) hors
-     de la colonne sur laptop ~1366px, faisant déborder le « S » sur la zone
-     claire du fond. Une taille plus contenue garde titre + logo dans la colonne. */
-  height: clamp(34px, 3.6vw, 44px);
+  /* Logo agrandi (demande client, cohérent avec Crousty). Le logo recadré (sans
+     marges parasites) tient à côté de « Sauce Cheddar » sans déborder. */
+  height: clamp(46px, 4.8vw, 64px);
 }
 
 .rowLarge .accroche {
-  font-size: clamp(22px, 2.8vw, 30px);
+  font-size: clamp(24px, 3vw, 33px);
 }
 
 .rowLarge .description {
-  font-size: clamp(17px, 2.1vw, 20px);
+  font-size: clamp(18px, 2.3vw, 22px);
   line-height: 1.65;
 }
 
 .rowLarge .textCol {
-  max-width: 560px;
+  max-width: 620px;
 }
 
 /* ───────── Mobile : titre + logo sur UNE seule ligne (demande client) ─────────

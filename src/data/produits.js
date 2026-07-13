@@ -7,6 +7,9 @@ export const PRODUITS = [
   {
     id: 'fromagere',
     nom: 'Sauce Fromagère',
+    // Design dédié « poster » façon affiche « Compose ton tacos / ton bowl's »
+    // (réf. client 1-pour-model.pdf) : composant PosterFromagere, pas ProductCard.
+    layout: 'poster',
     // Logo Whally's affiché à droite du titre (demande client, PDF page 2).
     logo: true,
     // Sous-titre (texte en jaune / italique sous le titre).
@@ -40,8 +43,35 @@ export const PRODUITS = [
     fond: '/produits/fond-cheddar.webp',
   },
   {
+    id: 'crousty',
+    nom: 'Sauce Crousty',
+    // Design dédié "GTA / street-food" (composant CroustyBanner, pas ProductCard).
+    layout: 'gta',
+    // Sous-titre (italique rose dans la bannière GTA).
+    accroche: "La sauce Crousty Whally's, c'est la tendance du moment pour vos crousty.",
+    // Conditionnement de commande B2B : carton de 10 kg (1 carton = 10 kg).
+    format: 'Carton de 10 kg',
+    poidsKg: 10,
+    description:
+      "Avec son goût unique et sa texture onctueuse, elle sublime vos recettes et transforme une simple préparation en véritable expérience street-food. La sauce Crousty Whally's donne du caractère, du relief et une touche irrésistible qui fera de vos crousty un vrai délice.",
+    descriptionLongue: null,
+    // Accent DA : magenta street-food (rappel bannière Crousty du PDF)
+    couleur: '#c0398b',
+    // Bowl produit détouré fourni par le client (CROUSTY.png, fond transparent) :
+    // le produit seul se pose proprement sur le fond GTA du composant
+    // CroustyBanner.
+    image: '/produits/CROUSTY.png',
+    // Fond GTA fourni par le client, upscalé en 4K puis optimisé (2560px webp).
+    banniere: '/gta.webp',
+  },
+  {
     id: 'cheddar',
     nom: 'Sauce Cheddar',
+    // Disposition inversée : texte à gauche, images (grille produits) à droite
+    // (demande client). Override l'alternance auto basée sur l'index.
+    reversed: true,
+    // Textes + logo agrandis (demande client, cohérent avec Crousty/Fromagère).
+    texteLarge: true,
     // Logo Whally's affiché à droite du titre (même mise en forme que la fromagère).
     logo: true,
     // Sous-titre (texte en jaune / italique sous le titre).
@@ -58,38 +88,19 @@ export const PRODUITS = [
     couleur: '#d9701f',
     // Photo produit fournie par le client (optimisée).
     image: '/produits/cheddar-produit.webp',
-    // Rendu « fusion » : 4 produits détourés groupés côté image (texte à gauche),
-    // fondus sur le fond de section, chacun avec son ombre au sol.
+    // Rendu « fusion » : 4 produits détourés (vraies photos client) groupés côté
+    // image, chacun annoté par une flèche + son nom (label). Produits fixes
+    // (pas d'animation, demande client).
     fusion: true,
     produitsDetoures: [
-      { src: '/produits/cheddar-1.webp', alt: 'Sandwich Whally\'s sauce cheddar' },
-      { src: '/produits/cheddar-2.webp', alt: 'Bowl Whally\'s sauce cheddar' },
-      { src: '/produits/cheddar-3.webp', alt: 'Frites cheddar Whally\'s' },
-      { src: '/produits/cheddar-4.webp', alt: 'Burrito Whally\'s sauce cheddar' },
+      { src: '/produits/cheddar-kebab.webp', alt: 'Kebab cheddar Whally\'s', label: 'Kebab' },
+      { src: '/produits/cheddar-frites.webp', alt: 'Frites cheddar Whally\'s', label: 'Frites' },
+      { src: '/produits/cheddar-galette.webp', alt: 'Galette cheddar Whally\'s', label: 'Galette' },
+      { src: '/produits/cheddar-box.webp', alt: 'Box cheddar Whally\'s', label: 'Box' },
     ],
     // Image de fond pleine largeur derrière la ligne produit (avec voile).
     // Fonds échangés Fromagère/Cheddar (demande client).
     fond: '/produits/fond-fromagere.webp',
-  },
-  {
-    id: 'crousty',
-    nom: 'Sauce Crousty',
-    // Design dédié "GTA / street-food" (composant CroustyBanner, pas ProductCard).
-    layout: 'gta',
-    // Sous-titre (italique rose dans la bannière GTA).
-    accroche: "La sauce Crousty Whally's, c'est la tendance du moment pour vos crousty.",
-    // Conditionnement de commande B2B : carton de 10 kg (1 carton = 10 kg).
-    format: 'Carton de 10 kg',
-    poidsKg: 10,
-    description:
-      "Avec son goût unique et sa texture onctueuse, elle sublime vos recettes et transforme une simple préparation en véritable expérience street-food. La sauce Crousty Whally's donne du caractère, du relief et une touche irrésistible qui fera de vos crousty un vrai délice.",
-    descriptionLongue: null,
-    // Accent DA : magenta street-food (rappel bannière Crousty du PDF)
-    couleur: '#c0398b',
-    // Bowl détouré fourni par le client (WebP transparent optimisé, 600px).
-    image: '/produits/crousty-bowl.webp',
-    // Fond GTA fourni par le client, upscalé en 4K puis optimisé (2560px webp).
-    banniere: '/gta.webp',
   },
 ];
 

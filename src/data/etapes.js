@@ -15,7 +15,12 @@ export const ETAPES = [
   },
   {
     id: 3,
-    image: '/etape3.webp',
+    // Trois produits détourés empilés (ordre imposé par le client).
+    images: [
+      '/produits/fromagere-tacos.webp',
+      '/produits/CROUSTY.png',
+      '/produits/bowl.webp',
+    ],
     titre: "C'est prêt !",
     texte: 'Servez et régalez vos clients.',
   },

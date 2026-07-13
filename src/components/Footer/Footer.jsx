@@ -1,11 +1,7 @@
 import { Link, useLocation } from 'react-router-dom';
-import { ArrowRight, Mail, Truck } from 'lucide-react';
+import { ArrowRight, Truck } from 'lucide-react';
 import logo from '../../assets/logo.png';
-import {
-  WHATSAPP_NUMBER,
-  WHATSAPP_MESSAGE,
-  CONTACT_EMAIL,
-} from '../../data/contact.js';
+import { WHATSAPP_NUMBER, WHATSAPP_MESSAGE } from '../../data/contact.js';
 import { PRODUITS } from '../../data/produits.js';
 import styles from './Footer.module.css';
 
@@ -65,7 +61,7 @@ function Footer() {
           </p>
           <p className={styles.delivery}>
             <Truck size={15} aria-hidden="true" />
-            Livraison 24/48h en Suisse romande
+            Livraison 24/48h dans toute la Suisse
           </p>
         </div>
 
@@ -89,10 +85,6 @@ function Footer() {
             className={styles.link}
           >
             WhatsApp
-          </a>
-          <a href={`mailto:${CONTACT_EMAIL}`} className={styles.linkWithIcon}>
-            <Mail size={15} aria-hidden="true" />
-            {CONTACT_EMAIL}
           </a>
           <a href={produitsHref} className={styles.link}>
             Nos produits

@@ -2,30 +2,38 @@
 //
 // Règles consolidées (validées client) :
 //
+// Heure limite de commande (cutoff) — PAR DÉPARTEMENT :
+//   • CH39, CH60, CH62, CH25 → avant 12h00
+//   • tout le reste          → avant 15h45
+// (défini dans departements.js via getCutoffForDepartement)
+//
 // Groupe 1 (CH10, CH11, CH12, CH25, CH60, CH62) → Lu/Ma/Me/Je/Ve
-//   • Commande avant 12h  → livraison J+1 (lendemain ouvré)
-//   • Commande après 12h  → livraison J+2 (ouvré)
-//   • Vendredi avant 12h  → livraison lundi
+//   • Commande avant cutoff → livraison J+1 (lendemain ouvré)
+//   • Commande après cutoff → livraison J+2 (ouvré)
+//   • Vendredi avant cutoff → livraison lundi
 //   • Week-end exclu (saute au lundi)
 //
 // Groupe 2 (CH16, CH19, CH23) → Lu/Me/Ve
-//   • Pour livrer un Lu, Me ou Ve, il faut avoir commandé avant la veille 12h.
-//   • Ex : commande avant vendredi 12h → lundi ;
-//          commande avant mardi 12h → mercredi ;
-//          commande avant jeudi 12h → vendredi.
+//   • Pour livrer un Lu, Me ou Ve, il faut avoir commandé avant la veille au cutoff.
+//   • Ex : commande avant vendredi cutoff → lundi ;
+//          commande avant mardi cutoff → mercredi ;
+//          commande avant jeudi cutoff → vendredi.
 //
 // Groupe 3 (CH14, CH18, CH39) → Ma/Je
-//   • Pour livrer un Ma ou Je, il faut avoir commandé avant la veille 12h.
-//   • Ex : commande avant lundi 12h → mardi ;
-//          commande avant mercredi 12h → jeudi.
+//   • Pour livrer un Ma ou Je, il faut avoir commandé avant la veille au cutoff.
+//   • Ex : commande avant lundi cutoff → mardi ;
+//          commande avant mercredi cutoff → jeudi.
 //
 // Principe générique : pour chaque date de livraison candidate, on calcule sa
-// "deadline de commande" (la veille à 12h00). Si maintenant <= deadline, la
+// "deadline de commande" (la veille au cutoff). Si maintenant <= deadline, la
 // date est proposée. Pour le groupe 1, on applique en plus la règle J+1/J+2.
 
-import { getGroupeForDepartement, LIVRAISON_GROUPES } from '../data/departements.js';
+import {
+  getCutoffForDepartement,
+  getGroupeForDepartement,
+  LIVRAISON_GROUPES,
+} from '../data/departements.js';
 
-const CUTOFF_HOUR = 12;
 const HORIZON_DAYS = 60; // fenêtre de calcul des prochains créneaux
 
 // Renvoie une nouvelle Date à minuit, sans muter l'originale
@@ -42,16 +50,17 @@ function addDays(date, n) {
   return d;
 }
 
-// Renvoie la deadline de commande (veille du jour de livraison à 12h00)
-function getOrderDeadline(deliveryDate) {
+// Renvoie la deadline de commande (veille du jour de livraison, au cutoff)
+function getOrderDeadline(deliveryDate, cutoff) {
   const deadline = addDays(deliveryDate, -1);
-  deadline.setHours(CUTOFF_HOUR, 0, 0, 0);
+  deadline.setHours(cutoff.hour, cutoff.minute, 0, 0);
   return deadline;
 }
 
-// Renvoie true si on est avant 12h aujourd'hui
-function isBeforeCutoffToday(now) {
-  return now.getHours() < CUTOFF_HOUR;
+// Renvoie true si on est avant le cutoff aujourd'hui
+function isBeforeCutoffToday(now, cutoff) {
+  const minutesNow = now.getHours() * 60 + now.getMinutes();
+  return minutesNow < cutoff.hour * 60 + cutoff.minute;
 }
 
 // Trouve la prochaine date qui correspond à un des jours autorisés du groupe
@@ -76,16 +85,17 @@ export function getAvailableDeliveryDates(departement, now = new Date()) {
   if (!groupeKey) return [];
 
   const { joursLivraison } = LIVRAISON_GROUPES[groupeKey];
+  const cutoff = getCutoffForDepartement(departement);
 
   // Calcul de la première date livrable selon le groupe.
   let earliest;
   if (groupeKey === 'groupe1') {
-    // Groupe 1 : règle J+1 si avant 15h, sinon J+2, en sautant le week-end.
-    const offset = isBeforeCutoffToday(now) ? 1 : 2;
+    // Groupe 1 : règle J+1 si avant le cutoff, sinon J+2, en sautant le week-end.
+    const offset = isBeforeCutoffToday(now, cutoff) ? 1 : 2;
     earliest = nextAllowedDay(addDays(startOfDay(now), offset), joursLivraison);
   } else {
     // Groupes 2 et 3 : on parcourt les jours du groupe et on garde ceux dont
-    // la deadline (veille 15h) n'est pas dépassée.
+    // la deadline (veille au cutoff) n'est pas dépassée.
     earliest = startOfDay(addDays(now, 1));
   }
 
@@ -101,8 +111,8 @@ export function getAvailableDeliveryDates(departement, now = new Date()) {
         // Pour le groupe 1, "earliest" garantit déjà la conformité au cutoff
         dates.push(new Date(current));
       } else {
-        // Groupes 2 et 3 : on vérifie strictement la deadline veille 15h
-        const deadline = getOrderDeadline(current);
+        // Groupes 2 et 3 : on vérifie strictement la deadline veille au cutoff
+        const deadline = getOrderDeadline(current, cutoff);
         if (now <= deadline) {
           dates.push(new Date(current));
         }

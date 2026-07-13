@@ -3,7 +3,7 @@ import styles from './Marquee.module.css';
 // Accroches défilantes (bandeau entre le hero et les produits).
 const ITEMS = [
   'Sauces signature',
-  'Livraison 24/48h en Suisse romande',
+  'Livraison 24/48h dans toute la Suisse',
   'Pensé pour les restaurateurs',
   'Recettes artisanales',
   'Le goût qui fidélise',

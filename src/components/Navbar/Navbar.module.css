@@ -1,7 +1,7 @@
 .header {
   /* Hauteur de la barre — réutilisée pour positionner le menu mobile.
-     Desktop : 60px (logo) + 2×12px (padding vertical) = 84px. */
-  --nav-h: 84px;
+     Desktop : 76px (logo) + 2×6px (padding vertical) = 88px. */
+  --nav-h: 88px;
 
   position: fixed;
   top: 0;
@@ -14,7 +14,21 @@
   transition:
     background-color 300ms var(--ease-out),
     border-color 300ms var(--ease-out),
-    backdrop-filter 300ms var(--ease-out);
+    backdrop-filter 300ms var(--ease-out),
+    transform 260ms var(--ease-out);
+}
+
+/* Masquée au scroll vers le bas : la barre glisse hors écran par le haut.
+   Révélée (transform: none) au scroll vers le haut. translateY(-100%) suit la
+   hauteur réelle de la barre, quelle qu'elle soit. */
+.headerHidden {
+  transform: translateY(-100%);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .headerHidden {
+    transform: none;
+  }
 }
 
 /* État au scroll : fond beige translucide + flou + bordure. */
@@ -43,7 +57,9 @@
      l'écran au lieu de s'arrêter à la limite du container, ce qui la faisait
      chevaucher les produits du hero. */
   width: 100%;
-  padding: var(--space-3) clamp(var(--container-padding), 3vw, 56px);
+  /* Padding vertical resserré (6px) pour garder la barre compacte malgré le
+     logo agrandi. Desktop : 76 + 2×6 = 88px. */
+  padding: 6px clamp(var(--container-padding), 3vw, 56px);
 }
 
 .logoLink {
@@ -57,20 +73,20 @@
 
 .logo {
   /* Logo agrandi (demande client) — reste contenu sur la hauteur de barre. */
-  height: 60px;
+  height: 76px;
   width: auto;
 }
 
 @media (max-width: 767px) {
-  /* Mobile : logo plus petit (52px) → la barre fait 52 + 2×12 = 76px. On aligne
-     --nav-h sur cette hauteur réelle pour que le menu mobile démarre PILE sous la
-     barre (sinon un trou de 8px décalait le menu). */
+  /* Mobile : logo 62px → la barre fait 62 + 2×6 = 74px. On aligne --nav-h sur
+     cette hauteur réelle pour que le menu mobile démarre PILE sous la barre
+     (sinon un trou décalait le menu). */
   .header {
-    --nav-h: 76px;
+    --nav-h: 74px;
   }
 
   .logo {
-    height: 52px;
+    height: 62px;
   }
 }
 
@@ -89,39 +105,32 @@
 
 .navLink {
   font-size: 15px;
-  font-weight: 500;
-  color: var(--color-texte);
+  font-weight: 600;
+  color: var(--color-brun);
   position: relative;
-  padding: var(--space-2) 0;
-  transition: color 200ms var(--ease-out);
+  /* Fond « pill » beige/blanc : lisible même quand la navbar est transparente. */
+  padding: 9px 18px;
+  border-radius: var(--radius-pill);
+  background-color: rgba(255, 255, 255, 0.92);
+  border: 1px solid rgba(42, 24, 16, 0.06);
+  box-shadow: var(--shadow-sm);
+  transition:
+    background-color 200ms var(--ease-out),
+    box-shadow 200ms var(--ease-out),
+    transform 160ms var(--ease-out);
 }
 
-/* En état transparent (haut de page sur la Home), texte clair lisible sur la vidéo. */
-.header:not(.headerScrolled) .navLink {
-  color: var(--color-blanc);
-}
-
-.header:not(.headerScrolled) .burger {
-  color: var(--color-blanc);
-}
-
+/* Hover : le pill s'éclaircit vers le blanc pur + ombre un peu plus marquée. */
 @media (hover: hover) and (pointer: fine) {
   .navLink:hover {
-    color: var(--color-brun);
+    background-color: #ffffff;
+    box-shadow: var(--shadow-md);
   }
 }
 
-.navLink::after {
-  content: '';
-  position: absolute;
-  inset: auto 50% 0 50%;
-  height: 2px;
-  background-color: var(--color-or);
-  transition: inset 200ms var(--ease-out);
-}
-
-.navLink:hover::after {
-  inset: auto 0 0 0;
+/* Press : léger scale, feedback tactile immédiat. */
+.navLink:active {
+  transform: scale(0.97);
 }
 
 /* ───────── Menu déroulant "Nos produits" (desktop) ───────── */
@@ -226,21 +235,10 @@
   background-color: var(--accent, var(--color-or));
 }
 
-.dropdownItemText {
-  display: flex;
-  flex-direction: column;
-  gap: 1px;
-}
-
 .dropdownItemName {
   font-size: 15px;
   font-weight: 600;
   color: var(--color-brun);
-}
-
-.dropdownItemAccroche {
-  font-size: 12.5px;
-  color: var(--color-texte-soft);
 }
 
 /* Burger mobile */
@@ -253,6 +251,11 @@
   border-radius: var(--radius-md);
   color: var(--color-brun);
   transition: transform 160ms var(--ease-out), background-color 200ms var(--ease-out);
+}
+
+/* En transparent (Home), burger clair pour rester lisible sur le hero sombre. */
+.header:not(.headerScrolled):not(.headerMenuOpen) .burger {
+  color: var(--color-blanc);
 }
 
 @media (hover: hover) and (pointer: fine) {

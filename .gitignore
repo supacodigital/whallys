@@ -20,6 +20,11 @@ _video-originals/
 # Sources/documents internes client
 _brief/
 
+# Sources lourdes fournies par le client (PSD/PDF/originaux non optimisés,
+# ~790 Mo). Trop volumineux pour GitHub — on ne versionne que les WebP/PNG
+# détourés et optimisés dans public/produits/.
+public/photoclients/
+
 # Images de référence / maquettes à la racine (non utilisées par le code)
 /hero-carousel.jpeg
 /hero-sauces.jpeg

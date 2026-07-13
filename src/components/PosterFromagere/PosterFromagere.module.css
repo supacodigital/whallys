@@ -1,0 +1,407 @@
+/* ═══════════ Section Fromagère « poster » PAYSAGE (réf. 1-pour-model.pdf) ═══════════
+   Une bande horizontale scindée en deux moitiés côte à côte :
+   gauche = TACOS (fond orange), droite = BOWL'S (fond brun). Chaque moitié :
+   titre en haut, produit détouré fixe + vapeur au centre, labels reliés au
+   produit par des flèches blanches courbes (SVG). */
+
+.poster {
+  position: relative;
+  width: 100%;
+  /* Remplit toute la hauteur que lui donne le conteneur (sticky stack de la Home
+     force 100vh) : sinon le contenu se masse en haut et le bas reste vide. */
+  min-height: 100%;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  scroll-margin-top: 100px;
+  /* Palette locale du poster (accents chauds du PDF). */
+  --poster-orange: #f6a11e;
+  --poster-orange-deep: #e2740f;
+  --poster-jaune: #ffd23c;
+  --poster-brun: #241206;
+  --poster-brun-soft: #3a1e0d;
+  --poster-rouge: #d8291c;
+  /* Image d'ambiance feu/fumée en fond de toute la section (demande client). */
+  background-image: url('/produits/fond-fromagere.webp');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+.defs {
+  position: absolute;
+}
+
+/* Les deux moitiés côte à côte (sur la photo de fond commune). */
+.halves {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  width: 100%;
+  /* occupe toute la hauteur du poster (donc du stackItem 100vh sur la Home) */
+  flex: 1;
+}
+
+/* ───────── Une moitié (tacos ou bowl) ───────── */
+.half {
+  position: relative;
+  overflow: hidden;
+  min-height: clamp(520px, 42vw, 700px);
+  padding: clamp(var(--space-6), 4vw, var(--space-8))
+    clamp(var(--space-4), 2.6vw, var(--space-7));
+}
+
+/* Moitiés SANS voile de couleur : on garde uniquement la photo de fond feu/fumée
+   (demande client). Les diagonales (clip-path) ne servent plus de couture entre
+   deux fonds colorés, mais on les retire pour ne pas rogner l'image. */
+.halfTacos {
+  z-index: 1;
+}
+
+.halfBowl {
+  z-index: 1;
+}
+
+/* ───────── Titres « COMPOSE / TON … » ───────── */
+.titre {
+  /* En absolu en haut de la moitié : le titre ne pousse pas le flux, ce qui
+     laisse le produit se centrer sur toute la hauteur (demande client).
+     Marge haute généreuse pour ne pas passer sous la navbar fixe ni être coupé. */
+  position: absolute;
+  z-index: 5;
+  top: clamp(var(--space-7), 5vw, var(--space-9));
+  display: flex;
+  flex-direction: column;
+  line-height: 0.84;
+  text-transform: uppercase;
+  font-family: var(--font-display);
+  font-weight: 400;
+  letter-spacing: 0.01em;
+  font-style: italic;
+  transform: skewX(-4deg);
+  pointer-events: none;
+}
+
+/* Ancrage horizontal du titre par moitié (padding déjà géré par .half). */
+.halfTacos .titre {
+  left: clamp(var(--space-4), 2.6vw, var(--space-7));
+}
+.halfBowl .titre {
+  right: clamp(var(--space-4), 2.6vw, var(--space-7));
+}
+
+.titrePetit {
+  font-size: clamp(30px, 3.8vw, 62px);
+}
+.titreGros {
+  font-size: clamp(24px, 3vw, 50px);
+}
+
+.titrePetit,
+.titreGros {
+  text-shadow: 0 3px 10px rgba(0, 0, 0, 0.28);
+}
+
+/* Tacos : « COMPOSE » rouge, « TON TACOS » blanc, aligné à gauche. */
+.halfTacos .titre {
+  align-items: flex-start;
+  color: #fff;
+}
+.halfTacos .titrePetit {
+  color: var(--poster-rouge);
+  -webkit-text-stroke: 1px rgba(255, 255, 255, 0.14);
+}
+
+/* Bowl : « COMPOSE » jaune, « TON BOWL'S » blanc, aligné à droite. */
+.halfBowl .titre {
+  align-items: flex-end;
+  text-align: right;
+  color: #fff;
+}
+.halfBowl .titrePetit {
+  color: var(--poster-jaune);
+}
+
+/* ───────── Produit détouré (fixe) + vapeur ───────── */
+.product {
+  position: absolute;
+  z-index: 2;
+  /* centré horizontalement ; remonté (54%) sous le bloc titre + description. */
+  left: 50%;
+  top: 54%;
+  transform: translate(-50%, -50%);
+  width: clamp(220px, 27vw, 390px);
+}
+
+.productImg {
+  width: 100%;
+  height: auto;
+  object-fit: contain;
+  filter:
+    drop-shadow(0 22px 26px rgba(20, 10, 4, 0.42))
+    drop-shadow(0 8px 10px rgba(20, 10, 4, 0.3));
+  /* zoom léger au survol : transform (GPU, n'affecte pas le layout) */
+  transition: transform 300ms var(--ease-out);
+  transform-origin: center bottom;
+  cursor: pointer;
+}
+
+/* Hover décoratif : le produit grossit légèrement. Gated pour éviter les faux
+   positifs sur écrans tactiles (le survol s'y déclenche au tap). */
+@media (hover: hover) and (pointer: fine) {
+  .product:hover .productImg {
+    transform: scale(1.05);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .productImg {
+    transition: none;
+  }
+}
+
+/* ───────── Vapeur « plat chaud » (seule animation conservée) ───────── */
+.steam {
+  position: absolute;
+  left: 50%;
+  bottom: 38%;
+  width: 70%;
+  height: 60%;
+  transform: translateX(-50%);
+  pointer-events: none;
+  z-index: -1;
+}
+
+.steamPuff {
+  position: absolute;
+  bottom: 0;
+  width: 26%;
+  height: 100%;
+  border-radius: 50%;
+  background: radial-gradient(
+    circle at 50% 60%,
+    rgba(255, 255, 255, 0.45) 0%,
+    rgba(255, 255, 255, 0) 62%
+  );
+  filter: blur(6px);
+  opacity: 0;
+  animation: poster-steam 6s ease-in-out infinite;
+}
+.steamPuff:nth-child(1) { left: 16%; animation-delay: 0s; animation-duration: 6s; }
+.steamPuff:nth-child(2) { left: 42%; animation-delay: -2.2s; animation-duration: 7s; }
+.steamPuff:nth-child(3) { left: 64%; animation-delay: -4.1s; animation-duration: 5.4s; }
+
+@keyframes poster-steam {
+  0% { opacity: 0; transform: translateY(0) scaleX(1); }
+  30% { opacity: 0.6; }
+  70% { opacity: 0.35; }
+  100% { opacity: 0; transform: translateY(-80px) scaleX(1.5); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .steamPuff { display: none; }
+}
+
+/* ───────── Flèches SVG (repère 0..100 de la moitié) ───────── */
+.annotations {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  pointer-events: none;
+}
+
+.arrow {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+
+.arrowPath {
+  fill: none;
+  stroke: #fff;
+  vector-effect: non-scaling-stroke;
+  /* trait plus fin (flèches allégées) */
+  stroke-width: 1.7;
+  stroke-linecap: round;
+  marker-end: url(#posterArrowHead);
+  filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.35));
+}
+
+/* ───────── Labels annotés ───────── */
+.label {
+  position: absolute;
+  z-index: 4;
+  display: flex;
+  flex-direction: column;
+  line-height: 1.04;
+  font-family: var(--font-serif);
+  font-style: italic;
+  color: #fff;
+  text-shadow: 0 2px 6px rgba(0, 0, 0, 0.45);
+  max-width: 30%;
+  transform: translateY(-50%);
+  pointer-events: none;
+}
+
+.labelLigne {
+  font-weight: 600;
+  font-size: clamp(13px, 1.2vw, 19px);
+}
+.labelFort {
+  font-weight: 900;
+  font-size: clamp(15px, 1.4vw, 23px);
+}
+
+.halfTacos .label .labelFort { color: #fff; }
+.halfBowl .label .labelFort { color: var(--poster-jaune); }
+
+/* ═══════════ Bloc texte central (présentation sauce) + ruban NOUVEAU ═══════════
+   Remplace la pastille : présentation de la Fromagère centrée en haut, entre les
+   deux titres, sur l'image feu (texte clair + ombres pour la lisibilité). */
+.intro {
+  position: absolute;
+  z-index: 6;
+  /* en haut au centre (au-dessus du ruban NOUVEAU central) */
+  top: clamp(var(--space-6), 5vw, var(--space-8));
+  left: 50%;
+  transform: translateX(-50%);
+  /* bloc empilé : ligne titre+logo, puis accroche + description. La largeur
+     s'adapte au contenu (l'accroche sur 1 ligne définit la largeur mini) ; la
+     description peut s'étendre plus large (voir .introDescription). */
+  width: max-content;
+  max-width: 52vw;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: clamp(8px, 1vw, 14px);
+}
+
+/* Ligne titre + logo côte à côte. */
+.introHead {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  gap: clamp(10px, 1.2vw, 18px);
+}
+
+.introTitre {
+  font-family: var(--font-serif);
+  font-weight: 700;
+  font-size: clamp(30px, 3.4vw, 56px);
+  line-height: 1.02;
+  color: #fff;
+  text-shadow: 0 2px 12px rgba(0, 0, 0, 0.6);
+  /* reste sur une seule ligne à côté du logo */
+  white-space: nowrap;
+}
+
+.introLogo {
+  width: clamp(132px, 13vw, 200px);
+  height: auto;
+  flex-shrink: 0;
+  filter: drop-shadow(0 3px 8px rgba(20, 10, 4, 0.5));
+}
+
+.introAccroche {
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-weight: 400;
+  font-size: clamp(17px, 1.75vw, 25px);
+  line-height: 1.35;
+  color: var(--poster-jaune);
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.65);
+  /* accroche sur une seule ligne (demande client) */
+  white-space: nowrap;
+}
+
+.introDescription {
+  font-family: var(--font-sans);
+  font-size: clamp(14px, 1.3vw, 18px);
+  line-height: 1.6;
+  color: rgba(255, 255, 255, 0.92);
+  text-shadow: 0 1px 6px rgba(0, 0, 0, 0.75);
+  /* description plus large que le reste du bloc : occupe une bande centrale
+     généreuse en haut (moins de lignes, plus lisible). */
+  max-width: min(48vw, 680px);
+}
+
+/* ═══════════ Mobile / étroit : on met en avant LA SAUCE (titre + description) ;
+   les annotations (flèches + labels ingrédients) n'ont de sens qu'avec le layout
+   fléché desktop → masquées. Ordre : bloc sauce en haut, puis les deux produits
+   avec leur titre « Compose ton… ». ═══════════ */
+@media (max-width: 900px) {
+  /* .poster est déjà flex-column : on ordonne intro (sauce) AVANT les produits. */
+  .intro {
+    order: -1;
+    position: relative;
+    top: auto;
+    left: auto;
+    transform: none;
+    width: min(90%, 480px);
+    max-width: 90%;
+    margin: clamp(var(--space-7), 12vw, var(--space-9)) auto 0;
+  }
+
+  /* La description reprend la pleine largeur du bloc (plus de bande étroite). */
+  .introDescription {
+    max-width: 100%;
+  }
+
+  /* L'accroche peut wrapper sur plusieurs lignes (le nowrap desktop déborderait
+     sur écran étroit). */
+  .introAccroche {
+    white-space: normal;
+  }
+
+  /* Titre + logo peuvent passer sur 2 lignes si l'écran est très étroit. */
+  .introHead {
+    flex-wrap: wrap;
+  }
+
+  .halves {
+    grid-template-columns: 1fr;
+  }
+
+  .halfTacos,
+  .halfBowl {
+    clip-path: none;
+    margin: 0;
+    min-height: 0;
+    padding-block: clamp(var(--space-6), 9vw, var(--space-8));
+  }
+
+  /* Titres « Compose ton… » centrés au-dessus de chaque produit. */
+  .halfTacos .titre,
+  .halfBowl .titre {
+    position: relative;
+    top: auto;
+    left: auto;
+    right: auto;
+    align-items: center;
+    text-align: center;
+    margin-inline: auto;
+    transform: skewX(-4deg);
+  }
+
+  /* Produit dans le flux, centré sous son titre. */
+  .product {
+    position: relative;
+    left: auto;
+    top: auto;
+    transform: none;
+    width: min(74%, 330px);
+    margin: clamp(var(--space-4), 6vw, var(--space-6)) auto 0;
+  }
+
+  /* Annotations (flèches + labels ingrédients) masquées : on met en avant la
+     sauce, pas la décomposition des produits (demande client). */
+  .annotations,
+  .label {
+    display: none;
+  }
+}

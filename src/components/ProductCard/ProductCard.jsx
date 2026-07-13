@@ -31,22 +31,34 @@ function ProductCard({ produit, reversed = false, dark = false }) {
               produit.produitsDetoures.length > 2 ? styles.fusionStage4 : ''
             }`}
           >
-            {/* Compo à 4 (Cheddar) : couche de rayons rotatifs derrière les
-                produits (effet promo/street-food, les produits restent fixes). */}
-            {produit.produitsDetoures.length > 2 && (
-              <div className={styles.fusionRays} aria-hidden="true" />
-            )}
             {produit.produitsDetoures.map((media, i) => (
-              <img
-                key={media.src}
-                src={media.src}
-                alt={i === 0 ? media.alt : ''}
-                aria-hidden={i === 0 ? undefined : 'true'}
-                loading="lazy"
-                className={`${styles.fusionItem} ${
-                  styles[`fusionItem${i + 1}`] || ''
-                }`}
-              />
+              // Compo à 4 (Cheddar) : chaque produit dans sa cellule, annoté par
+              // son nom (label). Produits fixes (pas d'animation, demande client).
+              media.label ? (
+                <div
+                  key={media.src}
+                  className={`${styles.fusionCell} ${styles[`fusionItem${i + 1}`] || ''}`}
+                >
+                  <img
+                    src={media.src}
+                    alt={media.alt}
+                    loading="lazy"
+                    className={styles.fusionCellImg}
+                  />
+                  <span className={styles.fusionLabel}>{media.label}</span>
+                </div>
+              ) : (
+                <img
+                  key={media.src}
+                  src={media.src}
+                  alt={i === 0 ? media.alt : ''}
+                  aria-hidden={i === 0 ? undefined : 'true'}
+                  loading="lazy"
+                  className={`${styles.fusionItem} ${
+                    styles[`fusionItem${i + 1}`] || ''
+                  }`}
+                />
+              )
             ))}
 
             {/* Vapeur CSS « plat chaud » : deux sources (bowl + tacos), chacune

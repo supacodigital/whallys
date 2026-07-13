@@ -1,0 +1,67 @@
+/* Preview + grille de calibrage des flèches (dev uniquement).
+   Hauteur forcée à 100vh (comme la Home via son sticky stack) pour que la grille
+   soit FIDÈLE au rendu réel. */
+.wrap {
+  position: relative;
+  height: 100vh;
+  height: 100dvh;
+  display: flex;
+  flex-direction: column;
+}
+
+.wrap > :first-child {
+  flex: 1;
+}
+
+/* La grille couvre la section, dédoublée en deux moitiés (repère 0..100 chacune,
+   identique à celui des tracés de flèches). */
+.gridLayer {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 50;
+}
+
+.gridHalf {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 50%;
+}
+.gauche { left: 0; }
+.droite { right: 0; }
+
+.vline {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 1px;
+  background: rgba(0, 200, 255, 0.35);
+}
+.hline {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: rgba(0, 200, 255, 0.35);
+}
+
+.vlabel,
+.hlabel {
+  position: absolute;
+  font-family: monospace;
+  font-size: 11px;
+  font-weight: 700;
+  color: #00e5ff;
+  background: rgba(0, 0, 0, 0.6);
+  padding: 0 3px;
+  border-radius: 2px;
+}
+.vlabel {
+  top: 4px;
+  left: 2px;
+}
+.hlabel {
+  left: 4px;
+  top: 2px;
+}

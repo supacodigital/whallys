@@ -1,4 +1,5 @@
 import { Crown } from 'lucide-react';
+import logo from '../../assets/logo.png';
 import styles from './CroustyBanner.module.css';
 
 /**
@@ -33,7 +34,12 @@ function CroustyBanner({ produit }) {
 
           <h3 className={styles.lettering}>
             <span className={styles.letteringTop}>Sauce</span>
-            <span className={styles.letteringMain}>Crousty</span>
+            <span className={styles.letteringMainWrap}>
+              <span className={styles.letteringMain}>Crousty</span>
+              {/* logo superposé sur la fin (« TY ») du mot, pour un effet compact
+                  type sticker (demande client). */}
+              <img src={logo} alt="Whally's" className={styles.letteringLogo} />
+            </span>
           </h3>
 
           <div className={styles.product}>

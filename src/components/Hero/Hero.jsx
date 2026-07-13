@@ -2,25 +2,37 @@ import { WHATSAPP_NUMBER, WHATSAPP_MESSAGE } from '../../data/contact.js';
 import styles from './Hero.module.css';
 
 // Les 3 sauces signature : nom + accent DA + produit détouré emblématique.
-// Ordre d'affichage diagonal : du plus grand (avant) au plus petit (fond).
+// Chaque produit est annoté (label + flèche) dans la scène, façon Fromagère.
+// `pos`  : ancrage du produit dans la scène (couche visuelle droite).
+// `label`: position du label (nom) ; `arrow` : tracé SVG (repère 0..100 scène).
 const SAUCES = [
-  {
-    id: 'fromagere',
-    nom: 'Fromagère',
-    accent: '#e0a93a',
-    produit: '/produits/fromagere-bowl.webp',
-  },
   {
     id: 'cheddar',
     nom: 'Cheddar',
     accent: '#d9701f',
-    produit: '/produits/cheddar-2.webp',
+    produit: '/produits/cheddar-1.webp',
+    // Coordonnées relevées client (grille 0..100).
+    labelPos: { top: '25%', left: '55%' },
+    // start (60,25) → target (70,25), légère inflexion vers le haut.
+    arrow: 'M 60 25 Q 65 23, 70 25',
+  },
+  {
+    id: 'fromagere',
+    nom: 'Fromagère',
+    accent: '#e0a93a',
+    produit: '/produits/fromagere-tacos.webp',
+    labelPos: { top: '55%', left: '90%' },
+    // start (85,55) → target (68,59), courbe vers la gauche/bas.
+    arrow: 'M 85 55 Q 76 56, 68 59',
   },
   {
     id: 'crousty',
     nom: 'Crousty',
     accent: '#c0398b',
-    produit: '/produits/fromagere-tacos.webp',
+    produit: '/produits/CROUSTY.png',
+    labelPos: { top: '80%', left: '50%' },
+    // start (55,80) → target (75,80), légère inflexion vers le bas.
+    arrow: 'M 55 80 Q 65 82, 75 80',
   },
 ];
 
@@ -30,9 +42,9 @@ const WHATSAPP_URL = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent
 )}`;
 
 /**
- * Hero plein écran immersif : les 3 produits détourés disposés en diagonale
- * dynamique (profondeur par taille / z-index), titre + sauces + CTA en
- * surimpression dans l'angle opposé. Fond brun/or premium (CSS).
+ * Hero plein écran immersif : les 3 produits détourés fixes (aucune animation,
+ * demande client), annotés par des flèches courbes + labels (nom de la sauce),
+ * dans le style de la section Fromagère. Titre + sous-titre + CTA à gauche.
  */
 function Hero() {
   return (
@@ -40,7 +52,31 @@ function Hero() {
       {/* Décor de fond (dégradé brun + halos dorés). */}
       <div className={styles.bg} aria-hidden="true" />
 
-      {/* Produits en diagonale (couche visuelle, derrière le texte). */}
+      {/* Pointe de flèche partagée par les annotations. */}
+      <svg width="0" height="0" className={styles.defs} aria-hidden="true">
+        <defs>
+          <marker
+            id="heroArrowHead"
+            viewBox="0 0 10 10"
+            refX="8"
+            refY="5"
+            markerWidth="5"
+            markerHeight="5"
+            orient="auto-start-reverse"
+          >
+            <path
+              d="M 0 1 L 9 5 L 0 9"
+              fill="none"
+              stroke="#fff"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+          </marker>
+        </defs>
+      </svg>
+
+      {/* Produits en diagonale (couche visuelle, fixes). */}
       <div className={styles.stage} aria-hidden="true">
         {SAUCES.map((s, i) => (
           <div
@@ -48,12 +84,6 @@ function Hero() {
             className={`${styles.stageItem} ${styles[`stageItem${i + 1}`]}`}
             style={{ '--accent': s.accent }}
           >
-            {/* Vapeur « plat chaud » qui s'élève du produit (3 volutes). */}
-            <span className={styles.steam}>
-              <span className={styles.steamPuff} />
-              <span className={styles.steamPuff} />
-              <span className={styles.steamPuff} />
-            </span>
             <img
               src={s.produit}
               alt=""
@@ -66,6 +96,28 @@ function Hero() {
         ))}
       </div>
 
+      {/* Couche annotations : flèches courbes + labels (nom des sauces). */}
+      <div className={styles.annotations} aria-hidden="true">
+        <svg
+          className={styles.arrowLayer}
+          viewBox="0 0 100 100"
+          preserveAspectRatio="none"
+        >
+          {SAUCES.map((s) => (
+            <path key={s.id} d={s.arrow} className={styles.arrowPath} />
+          ))}
+        </svg>
+        {SAUCES.map((s) => (
+          <span
+            key={s.id}
+            className={styles.label}
+            style={{ top: s.labelPos.top, left: s.labelPos.left, '--accent': s.accent }}
+          >
+            {s.nom}
+          </span>
+        ))}
+      </div>
+
       {/* Voile dégradé pour la lisibilité du texte (côté gauche/bas). */}
       <div className={styles.scrim} aria-hidden="true" />
 
@@ -73,29 +125,19 @@ function Hero() {
       <div className={styles.content}>
         <p className={styles.eyebrow}>Sauces signature Whally's</p>
 
-        <h1 className={styles.headline}>
-          Trois sauces.
-          <br />
-          <em>Un goût qui fidélise.</em>
-        </h1>
-
-        <ul className={styles.sauces} aria-label="Nos trois sauces">
+        {/* Titre = les 3 sauces empilées, chacune cliquable vers sa section. */}
+        <h1 className={styles.headline} aria-label="Fromagère, Crousty, Cheddar">
           {SAUCES.map((s) => (
-            <li
-              key={s.id}
-              className={styles.sauceItem}
-              style={{ '--accent': s.accent }}
-            >
-              <a href={`#${s.id}`} className={styles.sauceLink}>
+            <span key={s.id} className={styles.headlineItem} style={{ '--accent': s.accent }}>
+              <a href={`#${s.id}`} className={styles.headlineLink}>
                 {s.nom}
               </a>
-            </li>
+            </span>
           ))}
-        </ul>
+        </h1>
 
         <p className={styles.subline}>
-          Recettes artisanales pour restaurateurs — livraison rapide en Suisse
-          romande, 24/48h.
+          Trois sauces. <em>Un goût qui fidélise.</em>
         </p>
 
         <div className={styles.actions}>

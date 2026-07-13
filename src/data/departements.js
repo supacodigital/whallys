@@ -38,3 +38,17 @@ export function getGroupeForDepartement(dept) {
   }
   return null;
 }
+
+// Heure limite de commande par département (validée client) :
+//   • CH39, CH60, CH62, CH25 → avant 12h00
+//   • tout le reste          → avant 15h45
+// Le cutoff est défini PAR DÉPARTEMENT (il ne suit pas les groupes de livraison :
+// CH25/CH60/CH62 sont dans le groupe 1 et CH39 dans le groupe 3).
+const CUTOFF_12H = ['CH25', 'CH39', 'CH60', 'CH62'];
+
+// Retourne le cutoff { hour, minute } de commande pour un département.
+export function getCutoffForDepartement(dept) {
+  return CUTOFF_12H.includes(dept)
+    ? { hour: 12, minute: 0 }
+    : { hour: 15, minute: 45 };
+}

@@ -14,6 +14,8 @@ const WHATSAPP_URL = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent
 function Navbar() {
   const [open, setOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  // Barre masquée : cachée au scroll vers le bas, révélée au scroll vers le haut.
+  const [hidden, setHidden] = useState(false);
   // Dropdown "Nos produits" (desktop) ouvert au survol / focus.
   const [productsOpen, setProductsOpen] = useState(false);
   const location = useLocation();
@@ -35,18 +37,35 @@ function Navbar() {
     setOpen(false);
   }, [location.pathname]);
 
-  // Bascule l'état "scrolled" pour passer la navbar de transparent à beige.
-  // Sur les pages sans hero, on force d'emblée l'état beige.
+  // Sur la Home, la navbar reste TRANSPARENTE en permanence (demande client) :
+  // le fond derrière est toujours sombre/imagé (hero vidéo, section poster feu…).
+  // Sur les autres pages (ex. /commande, fond clair), on force le fond beige.
   useEffect(() => {
-    if (!isHome) {
-      setScrolled(true);
-      return;
-    }
-    const onScroll = () => setScrolled(window.scrollY > 8);
-    onScroll(); // état initial au montage / changement de route
+    setScrolled(!isHome);
+  }, [isHome]);
+
+  // Masquer la barre au scroll vers le bas, la révéler au scroll vers le haut.
+  // Seuil haut (< 80px) : toujours visible tout en haut de page. On lit la
+  // position via une ref locale pour comparer la direction sans re-render inutile.
+  useEffect(() => {
+    let lastY = window.scrollY;
+    const onScroll = () => {
+      const y = window.scrollY;
+      // Près du haut → toujours visible.
+      if (y < 80) {
+        setHidden(false);
+      } else if (y > lastY + 4) {
+        // scroll vers le bas (petit delta pour ignorer le tremblement)
+        setHidden(true);
+      } else if (y < lastY - 4) {
+        // scroll vers le haut
+        setHidden(false);
+      }
+      lastY = y;
+    };
     window.addEventListener('scroll', onScroll, { passive: true });
     return () => window.removeEventListener('scroll', onScroll);
-  }, [isHome]);
+  }, []);
 
   // Verrouiller le scroll du body quand le menu mobile est ouvert
   useEffect(() => {
@@ -60,11 +79,15 @@ function Navbar() {
   // mobile est ouvert (sinon la barre resterait transparente par-dessus le menu).
   const solid = scrolled || open;
 
+  // On masque uniquement si aucun menu/dropdown n'est ouvert (sinon on cacherait
+  // la barre alors que l'utilisateur interagit avec elle).
+  const isHidden = hidden && !open && !productsOpen;
+
   return (
     <header
       className={`${styles.header} ${solid ? styles.headerScrolled : ''} ${
         open ? styles.headerMenuOpen : ''
-      }`}
+      } ${isHidden ? styles.headerHidden : ''}`}
     >
       <div className={styles.inner}>
         <Link to="/" className={styles.logoLink} aria-label="Whally's — accueil">
@@ -107,12 +130,7 @@ function Navbar() {
                     onClick={() => setProductsOpen(false)}
                   >
                     <span className={styles.dropdownDot} aria-hidden="true" />
-                    <span className={styles.dropdownItemText}>
-                      <span className={styles.dropdownItemName}>{p.nom}</span>
-                      <span className={styles.dropdownItemAccroche}>
-                        {p.accroche}
-                      </span>
-                    </span>
+                    <span className={styles.dropdownItemName}>{p.nom}</span>
                   </a>
                 ))}
               </div>

@@ -13,18 +13,18 @@ const PANELS = [
     produit: '/produits/fromagere-produit.webp',
   },
   {
-    id: 'cheddar',
-    titre: 'Cheddar',
-    sousTitre: 'La Généreuse',
-    fond: '/produits/fond-cheddar.webp',
-    produit: '/produits/cheddar-produit.webp',
-  },
-  {
     id: 'crousty',
     titre: 'Crousty',
     sousTitre: "L'Audacieuse",
     fond: '/gta.webp',
     produit: '/produits/crousty-bowl.webp',
+  },
+  {
+    id: 'cheddar',
+    titre: 'Cheddar',
+    sousTitre: 'La Généreuse',
+    fond: '/produits/fond-cheddar.webp',
+    produit: '/produits/cheddar-produit.webp',
   },
 ];
 
