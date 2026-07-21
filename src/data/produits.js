@@ -7,9 +7,14 @@ export const PRODUITS = [
   {
     id: 'fromagere',
     nom: 'Sauce Fromagère',
-    // Design dédié « poster » façon affiche « Compose ton tacos / ton bowl's »
-    // (réf. client 1-pour-model.pdf) : composant PosterFromagere, pas ProductCard.
+    // Section = poster fini fourni par le client (composant PosterSection).
     layout: 'poster',
+    poster: '/sections/fromagere-poster.webp',
+    // Poster mobile dédié (format portrait) : produit + titre en bas de
+    // l'image, zone vide en haut → le texte de présentation passe en haut.
+    posterMobile: '/sections/fromagere-poster-mobile.webp',
+    // Texte descendu sur mobile (demande client).
+    texteTopMobile: '12%',
     // Logo Whally's affiché à droite du titre (demande client, PDF page 2).
     logo: true,
     // Sous-titre (texte en jaune / italique sous le titre).
@@ -45,8 +50,21 @@ export const PRODUITS = [
   {
     id: 'crousty',
     nom: 'Sauce Crousty',
-    // Design dédié "GTA / street-food" (composant CroustyBanner, pas ProductCard).
-    layout: 'gta',
+    // Section = poster fini fourni par le client (composant PosterSection).
+    layout: 'poster',
+    poster: '/sections/crousty-poster.webp',
+    // Poster mobile dédié (format portrait) : produit + titre en bas de
+    // l'image, zone vide en haut → le texte de présentation passe en haut.
+    posterMobile: '/sections/crousty-poster-mobile.webp',
+    // Texte descendu sur mobile (demande client).
+    texteTopMobile: '12%',
+    // Le lettering + bowl du poster occupent la gauche : texte de présentation
+    // à droite pour ne pas se superposer.
+    texteAlign: 'right',
+    // Zone vide plus large à droite sur ce poster : description moins contrainte.
+    descriptionWidth: '52ch',
+    // Logo Whally's affiché à côté du titre (même mise en forme que la fromagère).
+    logo: true,
     // Sous-titre (italique rose dans la bannière GTA).
     accroche: "La sauce Crousty Whally's, c'est la tendance du moment pour vos crousty.",
     // Conditionnement de commande B2B : carton de 10 kg (1 carton = 10 kg).
@@ -67,6 +85,12 @@ export const PRODUITS = [
   {
     id: 'cheddar',
     nom: 'Sauce Cheddar',
+    // Section = poster fini fourni par le client (composant PosterSection).
+    layout: 'poster',
+    poster: '/sections/cheddar-poster.webp',
+    // Poster mobile dédié (format portrait) : produit + titre en bas de
+    // l'image, zone vide en haut → le texte de présentation passe en haut.
+    posterMobile: '/sections/cheddar-poster-mobile.webp',
     // Disposition inversée : texte à gauche, images (grille produits) à droite
     // (demande client). Override l'alternance auto basée sur l'index.
     reversed: true,

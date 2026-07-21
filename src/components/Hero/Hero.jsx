@@ -1,39 +1,13 @@
 import { WHATSAPP_NUMBER, WHATSAPP_MESSAGE } from '../../data/contact.js';
 import styles from './Hero.module.css';
 
-// Les 3 sauces signature : nom + accent DA + produit détouré emblématique.
-// Chaque produit est annoté (label + flèche) dans la scène, façon Fromagère.
-// `pos`  : ancrage du produit dans la scène (couche visuelle droite).
-// `label`: position du label (nom) ; `arrow` : tracé SVG (repère 0..100 scène).
+// Les 3 sauces signature : nom + accent DA (utilisés par le titre empilé
+// cliquable). Le fond (poster fourni par le client) contient déjà les
+// produits et leurs labels — plus de scène/annotations codées ici.
 const SAUCES = [
-  {
-    id: 'cheddar',
-    nom: 'Cheddar',
-    accent: '#d9701f',
-    produit: '/produits/cheddar-1.webp',
-    // Coordonnées relevées client (grille 0..100).
-    labelPos: { top: '25%', left: '55%' },
-    // start (60,25) → target (70,25), légère inflexion vers le haut.
-    arrow: 'M 60 25 Q 65 23, 70 25',
-  },
-  {
-    id: 'fromagere',
-    nom: 'Fromagère',
-    accent: '#e0a93a',
-    produit: '/produits/fromagere-tacos.webp',
-    labelPos: { top: '55%', left: '90%' },
-    // start (85,55) → target (68,59), courbe vers la gauche/bas.
-    arrow: 'M 85 55 Q 76 56, 68 59',
-  },
-  {
-    id: 'crousty',
-    nom: 'Crousty',
-    accent: '#c0398b',
-    produit: '/produits/CROUSTY.png',
-    labelPos: { top: '80%', left: '50%' },
-    // start (55,80) → target (75,80), légère inflexion vers le bas.
-    arrow: 'M 55 80 Q 65 82, 75 80',
-  },
+  { id: 'cheddar', nom: 'Cheddar', accent: '#d9701f' },
+  { id: 'fromagere', nom: 'Fromagère', accent: '#e0a93a' },
+  { id: 'crousty', nom: 'Crousty', accent: '#c0398b' },
 ];
 
 // CTA principal : « Commander » ouvre WhatsApp (demande client).
@@ -42,81 +16,15 @@ const WHATSAPP_URL = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent
 )}`;
 
 /**
- * Hero plein écran immersif : les 3 produits détourés fixes (aucune animation,
- * demande client), annotés par des flèches courbes + labels (nom de la sauce),
- * dans le style de la section Fromagère. Titre + sous-titre + CTA à gauche.
+ * Hero plein écran immersif : fond = poster fourni par le client (produits +
+ * labels déjà intégrés dans l'image). Titre + sous-titre + CTA en overlay,
+ * ancrés à gauche.
  */
 function Hero() {
   return (
     <section className={styles.hero} aria-label="Les trois sauces signature Whally's">
-      {/* Décor de fond (dégradé brun + halos dorés). */}
+      {/* Décor de fond : poster client (produits + labels déjà intégrés). */}
       <div className={styles.bg} aria-hidden="true" />
-
-      {/* Pointe de flèche partagée par les annotations. */}
-      <svg width="0" height="0" className={styles.defs} aria-hidden="true">
-        <defs>
-          <marker
-            id="heroArrowHead"
-            viewBox="0 0 10 10"
-            refX="8"
-            refY="5"
-            markerWidth="5"
-            markerHeight="5"
-            orient="auto-start-reverse"
-          >
-            <path
-              d="M 0 1 L 9 5 L 0 9"
-              fill="none"
-              stroke="#fff"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            />
-          </marker>
-        </defs>
-      </svg>
-
-      {/* Produits en diagonale (couche visuelle, fixes). */}
-      <div className={styles.stage} aria-hidden="true">
-        {SAUCES.map((s, i) => (
-          <div
-            key={s.id}
-            className={`${styles.stageItem} ${styles[`stageItem${i + 1}`]}`}
-            style={{ '--accent': s.accent }}
-          >
-            <img
-              src={s.produit}
-              alt=""
-              loading="eager"
-              fetchpriority="high"
-              decoding="async"
-              className={styles.stageImg}
-            />
-          </div>
-        ))}
-      </div>
-
-      {/* Couche annotations : flèches courbes + labels (nom des sauces). */}
-      <div className={styles.annotations} aria-hidden="true">
-        <svg
-          className={styles.arrowLayer}
-          viewBox="0 0 100 100"
-          preserveAspectRatio="none"
-        >
-          {SAUCES.map((s) => (
-            <path key={s.id} d={s.arrow} className={styles.arrowPath} />
-          ))}
-        </svg>
-        {SAUCES.map((s) => (
-          <span
-            key={s.id}
-            className={styles.label}
-            style={{ top: s.labelPos.top, left: s.labelPos.left, '--accent': s.accent }}
-          >
-            {s.nom}
-          </span>
-        ))}
-      </div>
 
       {/* Voile dégradé pour la lisibilité du texte (côté gauche/bas). */}
       <div className={styles.scrim} aria-hidden="true" />

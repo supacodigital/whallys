@@ -1,8 +1,7 @@
 import Navbar from "../../components/Navbar/Navbar.jsx";
 import Footer from "../../components/Footer/Footer.jsx";
 import ProductCard from "../../components/ProductCard/ProductCard.jsx";
-import CroustyBanner from "../../components/CroustyBanner/CroustyBanner.jsx";
-import PosterFromagere from "../../components/PosterFromagere/PosterFromagere.jsx";
+import PosterSection from "../../components/PosterSection/PosterSection.jsx";
 import Hero from "../../components/Hero/Hero.jsx";
 import Marquee from "../../components/Marquee/Marquee.jsx";
 import UsageSteps from "../../components/UsageSteps/UsageSteps.jsx";
@@ -39,9 +38,7 @@ function Home() {
               {PRODUITS.map((p, index) => (
                 <div key={p.id} className={styles.stackItem}>
                   {p.layout === "poster" ? (
-                    <PosterFromagere produit={p} />
-                  ) : p.layout === "gta" ? (
-                    <CroustyBanner produit={p} />
+                    <PosterSection produit={p} />
                   ) : (
                     <ProductCard
                       produit={p}
