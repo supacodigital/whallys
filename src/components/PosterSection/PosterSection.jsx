@@ -26,6 +26,7 @@ function PosterSection({ produit }) {
         style={{
           '--texte-top': produit.texteTop,
           '--texte-top-mobile': produit.texteTopMobile,
+          maxWidth: produit.texteWidth,
         }}
       >
         <div className={styles.textHead}>

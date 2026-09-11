@@ -13,8 +13,15 @@ export const PRODUITS = [
     // Poster mobile dédié (format portrait) : produit + titre en bas de
     // l'image, zone vide en haut → le texte de présentation passe en haut.
     posterMobile: '/sections/fromagere-poster-mobile.webp',
-    // Texte descendu sur mobile (demande client).
-    texteTopMobile: '12%',
+    // Texte remonté sur mobile : sur ce poster, la zone vide au-dessus du
+    // lettering "FROMAGERE" est plus courte que sur les autres produits.
+    texteTopMobile: '4%',
+    // Zone vide plus étroite à gauche sur ce poster (le lettering "FROMAGERE"
+    // démarre tôt) : bloc texte resserré pour ne pas chevaucher l'image.
+    texteWidth: '46ch',
+    // Description plus large (aligné avec le style Crousty) : lignes plus
+    // longues plutôt que du texte compact.
+    descriptionWidth: '46ch',
     // Logo Whally's affiché à droite du titre (demande client, PDF page 2).
     logo: true,
     // Sous-titre (texte en jaune / italique sous le titre).

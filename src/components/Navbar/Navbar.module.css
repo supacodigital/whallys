@@ -3,13 +3,15 @@
      Desktop : 76px (logo) + 2×6px (padding vertical) = 88px. */
   --nav-h: 88px;
 
-  position: fixed;
+  /* Sticky (pas fixed) : la barre prend sa place normale dans le flux, le
+     contenu qui suit (hero…) commence en dessous d'elle au lieu d'être
+     recouvert. */
+  position: sticky;
   top: 0;
   left: 0;
   right: 0;
   z-index: 50;
-  /* État par défaut : transparent (par-dessus le hero vidéo). */
-  background-color: transparent;
+  background-color: var(--color-bg);
   border-bottom: 1px solid transparent;
   transition:
     background-color 300ms var(--ease-out),
@@ -31,11 +33,9 @@
   }
 }
 
-/* État au scroll : fond beige translucide + flou + bordure. */
+/* État au scroll : même fond opaque que le body (pas de flou/transparence). */
 .headerScrolled {
-  background-color: rgba(250, 247, 242, 0.85);
-  backdrop-filter: saturate(180%) blur(12px);
-  -webkit-backdrop-filter: saturate(180%) blur(12px);
+  background-color: var(--color-bg);
   border-bottom-color: var(--color-border);
 }
 

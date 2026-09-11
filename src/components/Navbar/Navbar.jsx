@@ -20,8 +20,6 @@ function Navbar() {
   const [productsOpen, setProductsOpen] = useState(false);
   const location = useLocation();
 
-  // La navbar n'est transparente que sur la Home (hero vidéo sombre derrière).
-  // Ailleurs, fond beige par défaut pour rester lisible.
   const isHome = location.pathname === '/';
 
   // Lien vers la section produits : ancre simple sur la Home, sinon on revient
@@ -37,11 +35,10 @@ function Navbar() {
     setOpen(false);
   }, [location.pathname]);
 
-  // Sur la Home, la navbar reste TRANSPARENTE en permanence (demande client) :
-  // le fond derrière est toujours sombre/imagé (hero vidéo, section poster feu…).
-  // Sur les autres pages (ex. /commande, fond clair), on force le fond beige.
+  // Fond beige opaque dès le chargement, sur toutes les pages (y compris la
+  // Home) : la navbar ne se fond plus dans le hero.
   useEffect(() => {
-    setScrolled(!isHome);
+    setScrolled(true);
   }, [isHome]);
 
   // Masquer la barre au scroll vers le bas, la révéler au scroll vers le haut.

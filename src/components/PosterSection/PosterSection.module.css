@@ -59,7 +59,7 @@
 }
 
 .logo {
-  height: clamp(52px, 6vw, 90px);
+  height: clamp(40px, 4.4vw, 68px);
   width: auto;
   max-width: 100%;
   flex-shrink: 1;
@@ -73,7 +73,9 @@
   font-weight: 400;
   font-size: clamp(20px, 2vw, 27px);
   line-height: 1.35;
-  color: var(--color-or);
+  /* Blanc (plutôt que doré) : le doré perd tout contraste sur les posters à
+     fond clair (ex. fond jaune de la section Fromagère). */
+  color: #fff;
   text-shadow: 0 2px 8px rgba(0, 0, 0, 0.6);
 }
 

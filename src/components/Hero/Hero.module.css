@@ -18,7 +18,7 @@
   z-index: 0;
   background:
     linear-gradient(rgba(28, 15, 6, 0.28), rgba(28, 15, 6, 0.28)),
-    url('/sections/hero-poster.webp');
+    url("/sections/hero-poster.webp");
   background-size: cover;
   /* Décalé vers le bas : le produit "Fromagère" du poster est proche du bord
      haut de l'image — sans ce décalage, il passe derrière la navbar
@@ -59,24 +59,31 @@
 
 .eyebrow {
   font-family: var(--font-sans);
-  font-size: clamp(11px, 1vw, 14px);
-  font-weight: 600;
-  letter-spacing: 0.26em;
+  /* Sur 2 lignes : « Sauces signature » / « Whally's ». Taille et largeur
+     limitées pour ne pas chevaucher les produits/labels du poster de fond. */
+  font-size: clamp(52px, 3vw, 40px);
+  font-weight: 700;
+  letter-spacing: 0.05em;
   text-transform: uppercase;
   color: var(--color-or);
+  line-height: 1.15;
+  max-width: 17ch;
+  white-space: normal;
   margin-bottom: clamp(16px, 2vw, 24px);
 }
 
-/* ───────── Titre = les 3 sauces cliquables, empilées sur 3 lignes ───────── */
+/* ───────── Titre = les 3 sauces cliquables, empilées sur 3 lignes ─────────
+   Reste en dessous de l'eyebrow (demande client) mais agrandi par rapport à
+   la version compacte précédente. */
 .headline {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
   font-family: var(--font-serif);
   font-weight: 700;
-  font-size: clamp(44px, 8vw, 104px);
-  letter-spacing: -0.035em;
-  line-height: 0.98;
+  font-size: clamp(66px, 3.4vw, 46px);
+  letter-spacing: -0.03em;
+  line-height: 1;
   color: #fff;
   text-shadow: 0 8px 40px rgba(0, 0, 0, 0.5);
   margin-bottom: clamp(20px, 2.6vw, 32px);
@@ -96,7 +103,9 @@
   background-repeat: no-repeat;
   background-position: 0 100%;
   background-size: 0% 0.07em;
-  transition: background-size 340ms var(--ease-out), color 200ms var(--ease-out);
+  transition:
+    background-size 340ms var(--ease-out),
+    color 200ms var(--ease-out);
 }
 
 @media (hover: hover) and (pointer: fine) {
@@ -151,11 +160,17 @@
   font-size: clamp(15px, 1.5vw, 17px);
   font-weight: 700;
   box-shadow: 0 16px 40px -16px rgba(201, 162, 75, 0.6);
-  transition: transform 160ms var(--ease-out), background-color 220ms var(--ease-out),
+  transition:
+    transform 160ms var(--ease-out),
+    background-color 220ms var(--ease-out),
     box-shadow 300ms var(--ease-out);
 }
 
-.ctaWa { width: 22px; height: 22px; flex-shrink: 0; }
+.ctaWa {
+  width: 22px;
+  height: 22px;
+  flex-shrink: 0;
+}
 
 @media (hover: hover) and (pointer: fine) {
   .cta:hover {
@@ -163,7 +178,9 @@
     box-shadow: 0 20px 48px -16px rgba(201, 162, 75, 0.7);
   }
 }
-.cta:active { transform: scale(0.97); }
+.cta:active {
+  transform: scale(0.97);
+}
 
 .ctaSecondary {
   display: inline-flex;
@@ -179,7 +196,9 @@
   font-weight: 600;
   backdrop-filter: blur(6px);
   -webkit-backdrop-filter: blur(6px);
-  transition: transform 160ms var(--ease-out), background-color 220ms var(--ease-out),
+  transition:
+    transform 160ms var(--ease-out),
+    background-color 220ms var(--ease-out),
     border-color 220ms var(--ease-out);
 }
 
@@ -188,9 +207,13 @@
     background-color: rgba(255, 255, 255, 0.14);
     border-color: rgba(255, 255, 255, 0.7);
   }
-  .ctaSecondary:hover .ctaArrow { transform: translateX(4px); }
+  .ctaSecondary:hover .ctaArrow {
+    transform: translateX(4px);
+  }
 }
-.ctaSecondary:active { transform: scale(0.97); }
+.ctaSecondary:active {
+  transform: scale(0.97);
+}
 
 .ctaArrow {
   width: 18px;
@@ -222,11 +245,9 @@
     margin-bottom: clamp(14px, 3vw, 22px);
   }
 
+  /* Sous-titre retiré sur mobile (demande client). */
   .subline {
-    /* Taille calée pour tenir sur une ligne sur mobile ; on retombe sur du
-       wrap normal seulement sur les très petits écrans (cf. media 380px). */
-    font-size: clamp(14px, 4.1vw, 20px);
-    margin-bottom: clamp(22px, 4vw, 32px);
+    display: none;
   }
 
   .actions {
@@ -238,7 +259,7 @@
   .bg {
     background:
       linear-gradient(rgba(28, 15, 6, 0.28), rgba(28, 15, 6, 0.28)),
-      url('/sections/hero-poster-mobile.webp');
+      url("/sections/hero-poster-mobile.webp");
     background-size: cover;
     background-position: center;
   }
@@ -247,27 +268,22 @@
      produits en bas (nécessaire ici, contrairement au desktop). */
   .scrim {
     display: block;
-    background:
-      linear-gradient(
-        to bottom,
-        rgba(18, 10, 5, 0.96) 0%,
-        rgba(18, 10, 5, 0.86) 30%,
-        rgba(18, 10, 5, 0.45) 52%,
-        rgba(18, 10, 5, 0.1) 72%,
-        transparent 86%
-      );
+    background: linear-gradient(
+      to bottom,
+      rgba(18, 10, 5, 0.96) 0%,
+      rgba(18, 10, 5, 0.86) 30%,
+      rgba(18, 10, 5, 0.45) 52%,
+      rgba(18, 10, 5, 0.1) 72%,
+      transparent 86%
+    );
   }
-}
-
-/* Très petits écrans : le sous-titre peut revenir à la ligne pour éviter tout
-   débordement horizontal. */
-@media (max-width: 400px) {
-  .subline { white-space: normal; }
 }
 
 /* ───────── Mouvement réduit ─────────
    Le hero n'a plus d'animation d'entrée ni de mouvement (produits fixes) : il
    ne reste qu'à neutraliser la micro-translation de la flèche CTA au survol. */
 @media (prefers-reduced-motion: reduce) {
-  .ctaSecondary:hover .ctaArrow { transform: none; }
+  .ctaSecondary:hover .ctaArrow {
+    transform: none;
+  }
 }
