@@ -107,7 +107,7 @@ function Navbar() {
               aria-expanded={productsOpen}
               onFocus={() => setProductsOpen(true)}
             >
-              Nos produits
+              Voir les sauces
               <ChevronDown
                 size={15}
                 className={styles.dropdownChevron}
@@ -166,7 +166,7 @@ function Navbar() {
                 className={styles.mobileLink}
                 onClick={() => setOpen(false)}
               >
-                Nos produits
+                Voir les sauces
               </a>
               <div className={styles.mobileSublist}>
                 {PRODUITS.map((p) => (

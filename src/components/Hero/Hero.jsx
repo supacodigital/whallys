@@ -31,7 +31,7 @@ function Hero() {
 
       {/* Contenu en surimpression. */}
       <div className={styles.content}>
-        <p className={styles.eyebrow}>Sauces signature Whally's</p>
+        <p className={styles.eyebrow}>Sauces Whally's</p>
 
         {/* Titre = les 3 sauces empilées, chacune cliquable vers sa section. */}
         <h1 className={styles.headline} aria-label="Fromagère, Crousty, Cheddar">

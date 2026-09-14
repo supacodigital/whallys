@@ -59,8 +59,8 @@
 
 .eyebrow {
   font-family: var(--font-sans);
-  /* Sur 2 lignes : « Sauces signature » / « Whally's ». Taille et largeur
-     limitées pour ne pas chevaucher les produits/labels du poster de fond. */
+  /* Taille et largeur limitées pour ne pas chevaucher les produits/labels
+     du poster de fond. */
   font-size: clamp(52px, 3vw, 40px);
   font-weight: 700;
   letter-spacing: 0.05em;
@@ -230,19 +230,22 @@
     justify-content: flex-start;
     align-items: center;
     text-align: center;
-    padding-top: clamp(90px, 12vh, 120px);
-    padding-bottom: clamp(36px, 7vh, 64px);
+    padding-top: clamp(76px, 8vh, 96px);
+    padding-bottom: clamp(16px, 4vh, 32px);
   }
 
-  /* Eyebrow retiré sur mobile (demande client). */
   .eyebrow {
-    display: none;
+    font-size: clamp(20px, min(6vw, 5vh), 28px);
+    max-width: none;
+    margin-bottom: clamp(6px, 1.5vh, 12px);
   }
 
   .headline {
     align-items: center;
-    font-size: clamp(46px, 15vw, 76px);
-    margin-bottom: clamp(14px, 3vw, 22px);
+    /* Combine vw et vh : évite un titre surdimensionné sur les écrans
+       larges mais bas (paysage, petite hauteur de viewport). */
+    font-size: clamp(38px, min(15vw, 11vh), 76px);
+    margin-bottom: clamp(8px, 2vh, 16px);
   }
 
   /* Sous-titre retiré sur mobile (demande client). */
@@ -252,6 +255,11 @@
 
   .actions {
     justify-content: center;
+  }
+
+  /* CTA secondaire "Voir les sauces" masqué sur mobile (demande client). */
+  .ctaSecondary {
+    display: none;
   }
 
   /* Poster mobile dédié fourni par le client (produits + labels en bas de
@@ -276,6 +284,31 @@
       rgba(18, 10, 5, 0.1) 72%,
       transparent 86%
     );
+  }
+}
+
+/* ───────── Mobile, viewport bas (≤ 750px de haut) ─────────
+   Sur les écrans larges mais courts (paysage, barres d'adresse
+   navigateur), le poster mobile en "cover" recadre l'image et remonte les
+   labels produits : on compacte le bloc texte/CTA pour ne pas les chevaucher. */
+@media (max-width: 768px) and (max-height: 750px) {
+  .content {
+    padding-top: clamp(64px, 7vh, 84px);
+    padding-bottom: clamp(12px, 3vh, 20px);
+  }
+
+  .eyebrow {
+    font-size: clamp(16px, 4vh, 22px);
+    margin-bottom: clamp(4px, 1vh, 8px);
+  }
+
+  .headline {
+    font-size: clamp(30px, 8vh, 52px);
+    margin-bottom: clamp(6px, 1.4vh, 12px);
+  }
+
+  .cta {
+    padding: clamp(10px, 1.8vh, 14px) clamp(20px, 4vw, 26px);
   }
 }
 
