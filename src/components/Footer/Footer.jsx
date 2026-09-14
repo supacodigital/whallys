@@ -95,17 +95,6 @@ function Footer() {
       {/* ───────── Barre du bas ───────── */}
       <div className={`container ${styles.bottom}`}>
         <p>© {year} Whally&apos;s — Tous droits réservés</p>
-        <p className={styles.credit}>
-          Site créé par{' '}
-          <a
-            href="https://supaco.digital"
-            target="_blank"
-            rel="noopener noreferrer"
-            className={styles.creditLink}
-          >
-            SupacoDigital
-          </a>
-        </p>
       </div>
     </footer>
   );

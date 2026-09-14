@@ -110,7 +110,7 @@
   position: relative;
   /* Fond « pill » beige/blanc : lisible même quand la navbar est transparente. */
   padding: 9px 18px;
-  border-radius: var(--radius-pill);
+  border-radius: var(--radius-md);
   background-color: rgba(255, 255, 255, 0.92);
   border: 1px solid rgba(42, 24, 16, 0.06);
   box-shadow: var(--shadow-sm);

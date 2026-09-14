@@ -465,7 +465,7 @@
   padding: 16px 28px;
   background-color: var(--color-brun);
   color: var(--color-blanc);
-  border-radius: var(--radius-pill);
+  border-radius: var(--radius-md);
   font-size: 16px;
   font-weight: 600;
   transition: transform 160ms var(--ease-out), background-color 200ms var(--ease-out),
@@ -734,7 +734,7 @@
   padding: 12px 24px;
   background-color: var(--color-brun);
   color: var(--color-blanc);
-  border-radius: var(--radius-pill);
+  border-radius: var(--radius-md);
   font-size: 15px;
   font-weight: 600;
   transition: transform 160ms var(--ease-out), background-color 200ms var(--ease-out);
